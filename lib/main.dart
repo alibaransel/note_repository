@@ -30,7 +30,7 @@ class MyApp extends StatefulWidget {
 }
 //TODO: Use receive_sharing_intent
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void themeModeListener() {
     if (!mounted) return;
     setState(() {
@@ -50,6 +50,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
+    PrepareService.onAppDispose();
     SettingService().themeMode.removeListener(themeModeListener);
     super.dispose();
   }

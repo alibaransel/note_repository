@@ -16,7 +16,7 @@ import 'package:note_repository/services/id_service.dart';
 import 'package:note_repository/services/navigation_service.dart';
 import 'package:note_repository/services/path_service.dart';
 import 'package:note_repository/services/item_service.dart';
-import 'package:note_repository/services/system_service.dart';
+import 'package:note_repository/services/ui_service.dart';
 import 'package:note_repository/services/time_service.dart';
 import 'package:video_player/video_player.dart';
 
@@ -99,7 +99,7 @@ class _NoteScreenState extends State<NoteScreen> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    const SystemService().restoreOverlays();
+    UIService.restoreOverlays();
     WidgetsBinding.instance.removeObserver(this);
     if (_note.info.type == NoteType.video) {
       _videoPlayerController.removeListener(_videoPlayerListener);
@@ -155,9 +155,9 @@ class _NoteScreenState extends State<NoteScreen> with WidgetsBindingObserver {
                       _isFullScreenMode = !_isFullScreenMode;
                     });
                     if (_isFullScreenMode) {
-                      await const SystemService().hideOverlays();
+                      await UIService.hideOverlays();
                     } else {
-                      await const SystemService().restoreOverlays();
+                      await UIService.restoreOverlays();
                     }
                   },
                 ),

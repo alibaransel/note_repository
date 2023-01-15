@@ -16,8 +16,10 @@ class PrepareService {
   }
 
   static Future<void> onAppInit() async {
-    const SystemService().setDefaults();
+    const UIService().setDefaults();
   }
+
+  static Future<void> onAppDispose() async {}
 
   static Future<void> onSplashScreen() async {
     await Firebase.initializeApp();

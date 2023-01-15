@@ -45,14 +45,20 @@ class CameraService with WidgetsBindingObserver {
   bool get focusOrExposurePointSupported => _focusPointSupported || _exposurePointSupported;
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     //TODO: Here
     switch (state) {
       case AppLifecycleState.paused:
-        _stop();
+        if ([
+          CameraStatus.videoRecording,
+          CameraStatus.videoRecordingPaused,
+        ].contains(_statusNotifier.value)) {
+          await stopVideoRecording();
+        }
+        await _stop();
         break;
       case AppLifecycleState.resumed:
-        _start();
+        await _start();
         break;
       default:
     }
