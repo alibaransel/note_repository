@@ -21,7 +21,7 @@ class UIService {
   }
 
   static Future<void> hideOverlays() async {
-    await _setUIMode(SystemUiMode.leanBack); // TODO: Is it true? If false change to manuel []
+    await _setUIMode(SystemUiMode.leanBack);
   }
 
   static Future<void> restoreOverlays() async {

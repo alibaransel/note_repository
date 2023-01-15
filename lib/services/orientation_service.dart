@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
 import 'package:note_repository/constants/angles.dart';
+import 'package:note_repository/services/system_service.dart';
 
-class OrientationService extends ValueNotifier<DeviceOrientation> with WidgetsBindingObserver {
+class OrientationService extends ValueNotifier<DeviceOrientation> {
   factory OrientationService() => _instance;
   static final OrientationService _instance = OrientationService._();
   OrientationService._() : super(_defaultOrientation);
@@ -24,25 +25,8 @@ class OrientationService extends ValueNotifier<DeviceOrientation> with WidgetsBi
 
   late StreamSubscription<NativeDeviceOrientation> _nativeOrientationStreamSubscription;
 
-  @override
-  void addListener(VoidCallback listener) {
-    if (!hasListeners) _start();
-    super.addListener(listener);
-  }
-
-  @override
-  void removeListener(VoidCallback listener) {
-    super.removeListener(listener);
-    if (!hasListeners) _stop();
-  }
-
-  @protected
-  @override
-  set value(DeviceOrientation newValue);
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
+  void _appStateListener() {
+    switch (SystemService().appState.value) {
       case AppLifecycleState.paused:
         _stop();
         break;
@@ -51,8 +35,29 @@ class OrientationService extends ValueNotifier<DeviceOrientation> with WidgetsBi
         break;
       default:
     }
-    super.didChangeAppLifecycleState(state);
   }
+
+  @override
+  void addListener(VoidCallback listener) {
+    if (!hasListeners) {
+      _start();
+      SystemService().appState.addListener(_appStateListener);
+    }
+    super.addListener(listener);
+  }
+
+  @override
+  void removeListener(VoidCallback listener) {
+    super.removeListener(listener);
+    if (!hasListeners) {
+      _stop();
+      SystemService().appState.removeListener(_appStateListener);
+    }
+  }
+
+  @protected
+  @override
+  set value(DeviceOrientation newValue);
 
   void _start() {
     _startListening();

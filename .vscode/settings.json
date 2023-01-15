@@ -6,6 +6,8 @@
         "Cupertino",
         "Firestore",
         "fullscreen",
-        "precache"
+        "Initable",
+        "precache",
+        "Startable"
     ]
 }

@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:note_repository/constants/configurations/app_defaults.dart';
 import 'package:note_repository/services/orientation_service.dart';
+import 'package:note_repository/services/system_service.dart';
 
 //TODO: Improve for race conditions
 //TODO: Add error conditions
 //TODO: Try multi camera preview, image and video actions, camera changing and camera mode changing
 
-class CameraService with WidgetsBindingObserver {
+class CameraService {
   factory CameraService() => _instance;
   static final CameraService _instance = CameraService._();
   CameraService._();
@@ -39,30 +40,24 @@ class CameraService with WidgetsBindingObserver {
   List<int> get frontCameraIndexes => _frontCameraIndexes;
   List<int> get backCameraIndexes => _backCameraIndexes;
   List<int> get externalCameraIndexes => _externalCameraIndexes;
-  FlashMode get flashMode => _controller.value.flashMode;
+  FlashMode get flashMode => _controller.value.flashMode; //TODO
   FocusMode get focusMode => _controller.value.focusMode;
   Offset get focusAndExposurePoint => _focusAndExposurePoint;
   bool get focusOrExposurePointSupported => _focusPointSupported || _exposurePointSupported;
 
-  @override
-  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
-    //TODO: Here
-    switch (state) {
+  void _appStateListener() async {
+    switch (SystemService().appState.value) {
       case AppLifecycleState.paused:
-        if ([
-          CameraStatus.videoRecording,
-          CameraStatus.videoRecordingPaused,
-        ].contains(_statusNotifier.value)) {
-          await stopVideoRecording();
-        }
         await _stop();
+        _statusNotifier.value = CameraStatus.inactive; //TODO
         break;
       case AppLifecycleState.resumed:
+        _statusNotifier.value = CameraStatus.starting;
         await _start();
+        _statusNotifier.value = CameraStatus.ready; //TODO
         break;
       default:
     }
-    super.didChangeAppLifecycleState(state);
   }
 
   void _orientationListener() {
@@ -156,6 +151,7 @@ class CameraService with WidgetsBindingObserver {
     try {
       _statusNotifier.value = CameraStatus.starting;
       await _start();
+      SystemService().appState.addListener(_appStateListener);
       _statusNotifier.value = CameraStatus.ready;
     } catch (e) {
       if (e is CameraException &&
@@ -189,6 +185,7 @@ class CameraService with WidgetsBindingObserver {
     if (_listenerCount != 0) return;
     if (![CameraStatus.ready, CameraStatus.starting].contains(_statusNotifier.value)) return;
     await _stop();
+    SystemService().appState.addListener(_appStateListener);
     _statusNotifier.value = CameraStatus.inactive;
   }
 

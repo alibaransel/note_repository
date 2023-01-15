@@ -5,6 +5,7 @@ import 'package:note_repository/services/camera_service.dart';
 import 'package:note_repository/services/setting_service.dart';
 import 'package:note_repository/services/storage_service.dart';
 import 'package:note_repository/services/system_service.dart';
+import 'package:note_repository/services/ui_service.dart';
 
 class PrepareService {
   PrepareService._();
@@ -16,10 +17,13 @@ class PrepareService {
   }
 
   static Future<void> onAppInit() async {
-    const UIService().setDefaults();
+    SystemService().start();
+    await UIService.setDefaults();
   }
 
-  static Future<void> onAppDispose() async {}
+  static void onAppDispose() {
+    SystemService().stop();
+  }
 
   static Future<void> onSplashScreen() async {
     await Firebase.initializeApp();

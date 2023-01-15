@@ -7,7 +7,7 @@ import 'package:note_repository/services/setting_service.dart';
 
 void main() async {
   await PrepareService.beforeAppRun();
-  runApp(const MyApp());
+  runApp(const App());
 }
 
 //TODO: String formatter
@@ -19,31 +19,31 @@ void main() async {
 //TODO: Theme (Color + Text Style)
 //TODO: Change storage structure
 //TODO: Downloading (With notification)
+//TODO: Use receive_sharing_intent
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class App extends StatefulWidget {
+  const App({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<App> createState() => _AppState();
 }
-//TODO: Use receive_sharing_intent
 
-class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  void themeModeListener() {
+class _AppState extends State<App> {
+  late ThemeMode _themeMode;
+
+  void _themeModeListener() {
     if (!mounted) return;
     setState(() {
       _themeMode = SettingService().themeMode.value;
     });
   }
 
-  late ThemeMode _themeMode;
-
   @override
   void initState() {
     PrepareService.onAppInit();
-    SettingService().themeMode.addListener(themeModeListener);
+    SettingService().themeMode.addListener(_themeModeListener);
     _themeMode = SettingService().themeMode.value;
     super.initState();
   }
@@ -51,7 +51,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void dispose() {
     PrepareService.onAppDispose();
-    SettingService().themeMode.removeListener(themeModeListener);
+    SettingService().themeMode.removeListener(_themeModeListener);
     super.dispose();
   }
 
