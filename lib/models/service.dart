@@ -1,10 +1,21 @@
+//Currently not used
 //TODO: Research and improve
 
 import 'package:flutter/foundation.dart';
 
 abstract class Service {}
 
-abstract class InitableService extends Service with _Initable {}
+abstract class InitableService extends Service with _Initable {
+  final VoidCallback _init;
+
+  InitableService(this._init);
+
+  @override
+  void init() {
+    _init();
+    super.init();
+  }
+}
 
 abstract class StoppableService extends Service with _Stoppable {}
 
