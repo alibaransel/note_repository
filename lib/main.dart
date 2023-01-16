@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:note_repository/constants/app_strings.dart';
 import 'package:note_repository/constants/design/app_themes.dart';
 import 'package:note_repository/interface/screens/splash_screen.dart';
-import 'package:note_repository/services/prepare_service.dart';
+import 'package:note_repository/services/service_service.dart';
 import 'package:note_repository/services/setting_service.dart';
 
 void main() async {

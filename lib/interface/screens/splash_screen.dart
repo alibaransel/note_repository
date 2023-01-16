@@ -5,7 +5,7 @@ import 'package:note_repository/constants/design/app_durations.dart';
 import 'package:note_repository/constants/design/app_sizes.dart';
 import 'package:note_repository/services/account_service.dart';
 import 'package:note_repository/services/navigation_service.dart';
-import 'package:note_repository/services/prepare_service.dart';
+import 'package:note_repository/services/service_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
