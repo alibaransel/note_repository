@@ -22,12 +22,6 @@ class NavigationService {
 
   GlobalKey<NavigatorState> get navigatorKey => _navigatorKey;
 
-  void push(Widget screen) {
-    _navigatorKey.currentState!.push(
-      MaterialPageRoute(builder: ((context) => screen)),
-    );
-  }
-
   void hide() {
     _navigatorKey.currentState!.maybePop();
   }
