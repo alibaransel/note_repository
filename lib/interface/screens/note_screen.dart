@@ -435,7 +435,7 @@ class _NoteScreenState extends State<NoteScreen> with WidgetsBindingObserver {
                 onTap: () async {
                   if (_ready) {
                     await ItemService.lastItemService.deleteNote(widget.notePath);
-                    const NavigationService().hide();
+                    NavigationService().hide();
                   }
                 },
               ),

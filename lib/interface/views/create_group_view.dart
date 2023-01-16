@@ -56,7 +56,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
       ),
     );
     if (_response == 'done') {
-      const NavigationService().hide();
+      NavigationService().hide();
       return;
     }
     setState(() {

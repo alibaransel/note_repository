@@ -3,7 +3,6 @@ import 'package:note_repository/constants/app_keys.dart';
 import 'package:note_repository/constants/design/app_icons.dart';
 import 'package:note_repository/constants/design/app_sizes.dart';
 import 'package:note_repository/interface/common/common_text.dart';
-import 'package:note_repository/interface/screens/group_screen.dart';
 import 'package:note_repository/models/group.dart';
 import 'package:note_repository/services/navigation_service.dart';
 import 'package:note_repository/services/path_service.dart';
@@ -22,9 +21,12 @@ class GroupCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        const NavigationService().push(
-          GroupScreen(
-            groupPath: PathService().group(parentGroupPath: parentGroupPath, groupInfo: groupInfo),
+        NavigationService().show(
+          NavigationRoute.group(
+            groupPath: PathService().group(
+              parentGroupPath: parentGroupPath,
+              groupInfo: groupInfo,
+            ),
           ),
         );
       },

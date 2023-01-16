@@ -46,7 +46,6 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
   CameraSetting? _cameraSetting;
   bool _isVideoMode = false; //TODO: Improve this
 
-  CameraStatus? _statusOnAppPause;
   late int _cameraIndex;
   late FlashMode _flashMode;
   late FocusMode _focusMode;
@@ -77,18 +76,18 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
       type: mediaType == CameraMediaType.image ? NoteType.image : NoteType.video,
       realMediaPath: mediaFileFullPath,
     );
-    const NavigationService().hide(); //TODO
+    NavigationService().hide(); //TODO
     if (response == AppKeys.error) {
-      const NavigationService().showSnackBar(AppStrings.pleaseTryAgain);
+      NavigationService().showSnackBar(AppStrings.pleaseTryAgain);
     }
   }
 
   Future<void> _import() async {
     final String result = await ItemService.lastItemService.tryCreateNoteWithImporting();
     if (result == AppKeys.done) {
-      const NavigationService().hide();
+      NavigationService().hide();
     }
-    const NavigationService().showSnackBar(result);
+    NavigationService().showSnackBar(result);
   }
 
   Future<void> _changeCameraSettingBox(CameraSetting newCameraSetting) async {
@@ -275,7 +274,7 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
         size: AppSizes.buttonM,
         iconSize: AppSizes.iconM,
         icon: AppIcons.close,
-        onTap: () => const NavigationService().hide(),
+        onTap: () => NavigationService().hide(),
       ),
     );
   }

@@ -27,12 +27,12 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     final String loginTryResult = await AccountService().tryLogin();
     if (loginTryResult == AppKeys.done) {
-      const NavigationService().show(NavigationRoute.home);
+      NavigationService().show(NavigationRoute.home);
     }
     setState(() {
       _buttonStatus = true;
     });
-    const NavigationService().showSnackBar(AppKeyMaps.loginSnackBarText[loginTryResult]!);
+    NavigationService().showSnackBar(AppKeyMaps.loginSnackBarText[loginTryResult]!);
   }
 
   @override

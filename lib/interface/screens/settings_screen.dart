@@ -73,7 +73,7 @@ class _AccountCard extends StatelessWidget {
     final Account account = AccountService().account;
 
     return GestureDetector(
-      onTap: () => const NavigationService().show(NavigationRoute.account),
+      onTap: () => NavigationService().show(NavigationRoute.account),
       child: Container(
         height: AppSizes.xL,
         padding: const EdgeInsets.all(AppSizes.spacingM),

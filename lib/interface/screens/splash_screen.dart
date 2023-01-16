@@ -20,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Future.delayed(AppDurations.splashMin),
       ServiceService.onSplashScreen(),
     ]).then((_) {
-      const NavigationService().show(
+      NavigationService().show(
         AccountService().isLoggedIn ? NavigationRoute.home : NavigationRoute.login,
       );
     });

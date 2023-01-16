@@ -5,35 +5,42 @@ import 'package:note_repository/constants/design/app_colors.dart';
 import 'package:note_repository/constants/design/app_durations.dart';
 import 'package:note_repository/constants/design/app_sizes.dart';
 import 'package:note_repository/interface/screens/camera_screen.dart';
+import 'package:note_repository/interface/screens/group_screen.dart';
+import 'package:note_repository/interface/screens/note_screen.dart';
 import 'package:note_repository/interface/views/account_view.dart';
 import 'package:note_repository/interface/screens/home_screen.dart';
 import 'package:note_repository/interface/screens/login_screen.dart';
 import 'package:note_repository/interface/screens/settings_screen.dart';
 import 'package:note_repository/interface/views/create_group_view.dart';
-import 'package:note_repository/main.dart';
 
 class NavigationService {
-  const NavigationService();
+  factory NavigationService() => _instance;
+  static final NavigationService _instance = NavigationService._();
+  NavigationService._();
+
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+
+  GlobalKey<NavigatorState> get navigatorKey => _navigatorKey;
 
   void push(Widget screen) {
-    navigatorKey.currentState!.push(
+    _navigatorKey.currentState!.push(
       MaterialPageRoute(builder: ((context) => screen)),
     );
   }
 
   void hide() {
-    navigatorKey.currentState!.maybePop();
+    _navigatorKey.currentState!.maybePop();
   }
 
   void show(NavigationRoute navigationRoute) {
     switch (navigationRoute.type) {
       case NavigationRouteType.screen:
-        navigatorKey.currentState!.push(
+        _navigatorKey.currentState!.push(
           MaterialPageRoute(builder: (context) => navigationRoute.widget),
         );
         break;
       case NavigationRouteType.replacedScreen:
-        final NavigatorState navigatorState = navigatorKey.currentState!;
+        final NavigatorState navigatorState = _navigatorKey.currentState!;
         navigatorState.popUntil((route) => route.isFirst);
         navigatorState.pushReplacement(
           MaterialPageRoute(builder: (context) => navigationRoute.widget),
@@ -41,7 +48,7 @@ class NavigationService {
         break;
       case NavigationRouteType.bottomSheet:
         showModalBottomSheet(
-          context: navigatorKey.currentContext!,
+          context: _navigatorKey.currentContext!,
           isScrollControlled: true,
           barrierColor: Colors.transparent,
           backgroundColor: Colors.transparent,
@@ -50,7 +57,7 @@ class NavigationService {
         break;
       case NavigationRouteType.popup:
         showCupertinoModalPopup(
-          context: navigatorKey.currentContext!,
+          context: _navigatorKey.currentContext!,
           barrierColor: Colors.transparent,
           filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
           builder: (context) => navigationRoute.widget,
@@ -60,7 +67,7 @@ class NavigationService {
   }
 
   void showSnackBar(String text) {
-    final BuildContext context = navigatorKey.currentContext!;
+    final BuildContext context = _navigatorKey.currentContext!;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -139,6 +146,28 @@ class NavigationRoute {
     type: NavigationRouteType.popup,
     widget: AccountView(),
   );
+
+  factory NavigationRoute.group({
+    required String groupPath,
+    Color? backgroundColor,
+    PreferredSizeWidget? appBar,
+  }) {
+    return NavigationRoute._(
+      type: NavigationRouteType.screen,
+      widget: GroupScreen(
+        groupPath: groupPath,
+        backgroundColor: backgroundColor,
+        appBar: appBar,
+      ),
+    );
+  }
+
+  factory NavigationRoute.note(String notePath) {
+    return NavigationRoute._(
+      type: NavigationRouteType.screen,
+      widget: NoteScreen(notePath),
+    );
+  }
 }
 
 enum NavigationRouteType {

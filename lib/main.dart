@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:note_repository/constants/app_strings.dart';
 import 'package:note_repository/constants/design/app_themes.dart';
 import 'package:note_repository/interface/screens/splash_screen.dart';
+import 'package:note_repository/services/navigation_service.dart';
 import 'package:note_repository/services/service_service.dart';
 import 'package:note_repository/services/setting_service.dart';
 
@@ -20,8 +21,6 @@ void main() async {
 //TODO: Change storage structure
 //TODO: Downloading (With notification)
 //TODO: Use receive_sharing_intent
-
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -59,7 +58,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      navigatorKey: navigatorKey,
+      navigatorKey: NavigationService().navigatorKey,
       title: AppStrings.appName,
       themeMode: _themeMode,
       theme: AppThemes.light,

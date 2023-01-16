@@ -39,7 +39,7 @@ class HomeScreen extends StatelessWidget {
           iconSize: AppSizes.iconM,
           icon: AppIcons.settings,
           iconHeroTag: AppKeys.settingIconTag,
-          onTap: () => const NavigationService().show(NavigationRoute.settings),
+          onTap: () => NavigationService().show(NavigationRoute.settings),
         ),
       ],
     );

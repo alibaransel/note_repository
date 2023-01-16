@@ -71,7 +71,7 @@ class CommonAppBar extends StatelessWidget with PreferredSizeWidget {
       size: AppSizes.buttonM,
       iconSize: AppSizes.iconM,
       icon: AppIcons.arrowBack,
-      onTap: () => const NavigationService().hide(),
+      onTap: () => NavigationService().hide(),
     );
   }
 

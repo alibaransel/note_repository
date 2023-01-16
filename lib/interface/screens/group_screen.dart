@@ -153,7 +153,7 @@ class _GroupScreenState extends State<GroupScreen> {
           onTap: () async {
             if (_ready) {
               await _itemService.deleteGroup();
-              const NavigationService().hide();
+              NavigationService().hide();
             }
           },
         )
@@ -170,8 +170,8 @@ class _GroupScreenState extends State<GroupScreen> {
         duration: _fabAnimationDuration,
         child: _isFABVisible
             ? GestureDetector(
-                onTap: () => const NavigationService().show(NavigationRoute.addMedia),
-                onLongPress: () => const NavigationService().show(NavigationRoute.createGroup),
+                onTap: () => NavigationService().show(NavigationRoute.addMedia),
+                onLongPress: () => NavigationService().show(NavigationRoute.createGroup),
                 child: const CommonBackground(
                   child: SizedBox(
                     height: AppSizes.createButton,

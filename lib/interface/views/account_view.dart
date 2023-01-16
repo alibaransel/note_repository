@@ -71,8 +71,8 @@ class AccountView extends StatelessWidget {
               GestureDetector(
                 onTap: () async {
                   await AccountService().logOut();
-                  const NavigationService().show(NavigationRoute.login);
-                  const NavigationService().showSnackBar(AppStrings.logoutSnackBar);
+                  NavigationService().show(NavigationRoute.login);
+                  NavigationService().showSnackBar(AppStrings.logoutSnackBar);
                 },
                 child: Container(
                   height: AppSizes.m,
