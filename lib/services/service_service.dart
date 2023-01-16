@@ -7,8 +7,8 @@ import 'package:note_repository/services/storage_service.dart';
 import 'package:note_repository/services/system_service.dart';
 import 'package:note_repository/services/ui_service.dart';
 
-class PrepareService {
-  PrepareService._();
+class ServiceService {
+  ServiceService._();
 
   static Future<void> beforeAppRun() async {
     WidgetsFlutterBinding.ensureInitialized();

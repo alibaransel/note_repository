@@ -6,7 +6,7 @@ import 'package:note_repository/services/prepare_service.dart';
 import 'package:note_repository/services/setting_service.dart';
 
 void main() async {
-  await PrepareService.beforeAppRun();
+  await ServiceService.beforeAppRun();
   runApp(const App());
 }
 
@@ -42,7 +42,7 @@ class _AppState extends State<App> {
 
   @override
   void initState() {
-    PrepareService.onAppInit();
+    ServiceService.onAppInit();
     SettingService().themeMode.addListener(_themeModeListener);
     _themeMode = SettingService().themeMode.value;
     super.initState();
@@ -50,7 +50,7 @@ class _AppState extends State<App> {
 
   @override
   void dispose() {
-    PrepareService.onAppDispose();
+    ServiceService.onAppDispose();
     SettingService().themeMode.removeListener(_themeModeListener);
     super.dispose();
   }

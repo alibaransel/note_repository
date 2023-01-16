@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void _prepareAppInMinTime() {
     Future.wait([
       Future.delayed(AppDurations.splashMin),
-      PrepareService.onSplashScreen(),
+      ServiceService.onSplashScreen(),
     ]).then((_) {
       const NavigationService().show(
         AccountService().isLoggedIn ? NavigationRoute.home : NavigationRoute.login,
