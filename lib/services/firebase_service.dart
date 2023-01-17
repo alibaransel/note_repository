@@ -105,6 +105,7 @@ class FirebaseService {
   bool isLoggedIn() => FirebaseAuth.instance.currentUser != null;
 
   Future<void> logOut() async {
+    await GoogleSignIn().disconnect();
     await FirebaseAuth.instance.signOut();
   }
 }
