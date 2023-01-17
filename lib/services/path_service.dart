@@ -19,14 +19,8 @@ class PathService {
   }
 
   String fullPath(String path) {
-    //TODO: Think
-    if (path.startsWith(AppPaths.app) ||
-        path.startsWith(AppPaths.user) ||
-        [
-          AppPaths.core,
-          AppPaths.app,
-          AppPaths.user,
-        ].contains(path)) {
+    if (path.startsWith(AppPaths.pathIdentifier)) {
+      path = path.substring(AppPaths.pathIdentifier.length);
       path = _corePath + path;
     }
     return path;

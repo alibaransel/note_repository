@@ -4,12 +4,17 @@ class AppPaths {
   const AppPaths._();
 
   static const String directorySeparator = '/';
+
   static const String dataFileExtension = '.json';
   static const String imageFileExtension = '.png';
   static const String videoFileExtension = '.mp4';
   static const String audioFileExtension = '.mp3';
 
-  static const String core = '/data-core'; //TODO: Think
+  static const String pathIdentifier = 'path:';
+
+  static const String core = '$pathIdentifier/core';
+
+  //TODO: Add account path for different accounts
 
   static const String app = '$core/app';
   static const String config = '$app/configs$dataFileExtension';
