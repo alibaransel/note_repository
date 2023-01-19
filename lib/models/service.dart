@@ -5,6 +5,7 @@ abstract class Service {}
 abstract class Initable {
   bool _isInitialized = false;
 
+  @protected
   bool get isInitialized => _isInitialized;
 
   void init() {
@@ -15,6 +16,7 @@ abstract class Initable {
 abstract class Stoppable {
   bool _isRunning = false;
 
+  @protected
   bool get isRunning => _isRunning;
 
   void start() {
