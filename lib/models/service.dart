@@ -2,9 +2,7 @@ import 'package:flutter/foundation.dart';
 
 abstract class Service {}
 
-abstract class StaticService extends Service {}
-
-abstract class InitableService extends Service {
+abstract class Initable {
   bool _isInitialized = false;
 
   bool get isInitialized => _isInitialized;
@@ -14,7 +12,7 @@ abstract class InitableService extends Service {
   }
 }
 
-abstract class StoppableService extends InitableService {
+abstract class Stoppable {
   bool _isRunning = false;
 
   bool get isRunning => _isRunning;
@@ -28,7 +26,7 @@ abstract class StoppableService extends InitableService {
   }
 }
 
-abstract class ProtectedStoppableService extends StoppableService {
+abstract class AutoStoppable extends Stoppable {
   @protected
   @override
   void start() => super.start();
