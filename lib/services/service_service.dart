@@ -28,6 +28,6 @@ class ServiceService {
   static Future<void> onSplashScreen() async {
     await Firebase.initializeApp();
     await CameraService().fetch();
-    await AccountService().fetch();
+    await AccountService().init();
   }
 }

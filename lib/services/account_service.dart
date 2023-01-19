@@ -1,11 +1,12 @@
 import 'package:note_repository/constants/app_keys.dart';
 import 'package:note_repository/constants/app_paths.dart';
 import 'package:note_repository/models/account.dart';
+import 'package:note_repository/models/service.dart';
 import 'package:note_repository/services/firebase_service.dart';
 import 'package:note_repository/services/setting_service.dart';
 import 'package:note_repository/services/storage_service.dart';
 
-class AccountService {
+class AccountService extends Service with Initable {
   factory AccountService() => _instance;
   static final AccountService _instance = AccountService._();
   AccountService._();
@@ -15,14 +16,36 @@ class AccountService {
   Account get account => _account;
   bool get isLoggedIn => FirebaseService.isLoggedIn();
 
-  Future<void> _delete() async {
+  @override
+  Future<void> init() async {
+    await _fetch();
+    super.init();
+  }
+
+  Future<String> tryLogin() async => await FirebaseService.tryLoginWithGoogle(); //TODO
+
+  Future<void> set(Account newAccount) async {
+    _account = newAccount;
+    await StorageService.file.updateData(
+      path: AppPaths.account,
+      newData: {
+        AppKeys.uid: newAccount.uid,
+        AppKeys.name: newAccount.name,
+        AppKeys.email: newAccount.email,
+        AppKeys.loginType: newAccount.loginType,
+      },
+    );
+  }
+
+  Future<void> logOut() async {
     await Future.wait([
-      StorageService.file.emptyData(AppPaths.account),
-      StorageService.file.delete(AppPaths.userImage),
+      FirebaseService.logOut(),
+      _delete(),
+      SettingService().setToDefaults(),
     ]);
   }
 
-  Future<void> fetch() async {
+  Future<void> _fetch() async {
     if (!isLoggedIn) return;
     final Map<String, dynamic> accountData = await StorageService.file.getData(AppPaths.account);
     await set(
@@ -36,26 +59,10 @@ class AccountService {
     );
   }
 
-  Future<String> tryLogin() async => await FirebaseService.tryLoginWithGoogle(); //TODO
-
-  Future<void> logOut() async {
+  Future<void> _delete() async {
     await Future.wait([
-      FirebaseService.logOut(),
-      _delete(),
-      SettingService().setToDefaults(),
+      StorageService.file.emptyData(AppPaths.account),
+      StorageService.file.delete(AppPaths.userImage),
     ]);
-  }
-
-  Future<void> set(Account newAccount) async {
-    _account = newAccount;
-    await StorageService.file.updateData(
-      path: AppPaths.account,
-      newData: {
-        AppKeys.uid: newAccount.uid,
-        AppKeys.name: newAccount.name,
-        AppKeys.email: newAccount.email,
-        AppKeys.loginType: newAccount.loginType,
-      },
-    );
   }
 }
