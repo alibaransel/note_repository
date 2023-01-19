@@ -4,12 +4,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:note_repository/constants/app_keys.dart';
 import 'package:note_repository/constants/app_paths.dart';
 import 'package:note_repository/models/account.dart';
+import 'package:note_repository/models/service.dart';
 import 'package:note_repository/services/network_service.dart';
 import 'package:note_repository/services/account_service.dart';
 import 'package:note_repository/services/storage_service.dart';
 import 'package:note_repository/services/time_service.dart';
 
-class FirebaseService {
+class FirebaseService extends Service {
   FirebaseService._();
 
   static Future<UserCredential> _loginWithGoogle() async {
@@ -78,7 +79,7 @@ class FirebaseService {
 
     List<dynamic> loginHistory = accountData[AppKeys.loginHistory];
 
-    loginHistory.add(TimeService().encode(DateTime.now()));
+    loginHistory.add(TimeService.encode(DateTime.now()));
 
     await FirebaseFirestore.instance
         .collection(AppKeys.users)

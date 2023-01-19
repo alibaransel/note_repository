@@ -295,7 +295,7 @@ class _NoteService {
         path: PathService().note(groupPath: groupPath, noteInfo: noteInfo),
         data: {
           AppKeys.name: noteInfo.name,
-          AppKeys.dateTime: TimeService().encode(noteInfo.dateTime),
+          AppKeys.dateTime: TimeService.encode(noteInfo.dateTime),
           AppKeys.type: noteInfo.type.name,
         },
       );

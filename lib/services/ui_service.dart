@@ -1,7 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:note_repository/constants/configurations/app_defaults.dart';
+import 'package:note_repository/models/service.dart';
 
-class UIService {
+class UIService extends Service {
   UIService._();
 
   static Future<void> _setOrientations(List<DeviceOrientation> deviceOrientations) async {

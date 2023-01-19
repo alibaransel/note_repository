@@ -12,8 +12,9 @@ import 'package:note_repository/interface/screens/home_screen.dart';
 import 'package:note_repository/interface/screens/login_screen.dart';
 import 'package:note_repository/interface/screens/settings_screen.dart';
 import 'package:note_repository/interface/views/create_group_view.dart';
+import 'package:note_repository/models/service.dart';
 
-class NavigationService {
+class NavigationService extends Service {
   factory NavigationService() => _instance;
   static final NavigationService _instance = NavigationService._();
   NavigationService._();

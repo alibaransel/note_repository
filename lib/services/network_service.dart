@@ -1,8 +1,9 @@
 import 'dart:io';
 import 'package:http/http.dart';
+import 'package:note_repository/models/service.dart';
 import 'package:note_repository/services/storage_service.dart';
 
-class NetworkService {
+class NetworkService extends Service {
   NetworkService._();
 
   static const List<String> _checkURLs = [

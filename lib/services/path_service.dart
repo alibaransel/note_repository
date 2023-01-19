@@ -3,17 +3,19 @@ import 'package:note_repository/constants/app_key_maps.dart';
 import 'package:note_repository/constants/app_paths.dart';
 import 'package:note_repository/models/group.dart';
 import 'package:note_repository/models/note.dart';
+import 'package:note_repository/models/service.dart';
 import 'package:note_repository/services/id_service.dart';
 import 'package:path_provider/path_provider.dart';
 
-class PathService {
+class PathService extends Service with Initable {
   factory PathService() => _instance;
   static final PathService _instance = PathService._();
   PathService._();
 
   late final String _corePath;
 
-  Future<void> fetch() async {
+  @override
+  Future<void> init() async {
     final Directory directory = await getApplicationDocumentsDirectory();
     _corePath = directory.path;
   }

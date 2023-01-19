@@ -280,7 +280,7 @@ class _NoteScreenState extends State<NoteScreen> with WidgetsBindingObserver {
                         alignment: Alignment.center,
                         padding: const EdgeInsets.symmetric(horizontal: AppSizes.spacingS),
                         child: Text(
-                          TimeService().videoTime(_videoPlayerController.value.position),
+                          TimeService.videoTime(_videoPlayerController.value.position),
                         ),
                       ),
                     ),
@@ -291,7 +291,7 @@ class _NoteScreenState extends State<NoteScreen> with WidgetsBindingObserver {
                         alignment: Alignment.center,
                         padding: const EdgeInsets.symmetric(horizontal: AppSizes.spacingS),
                         child: Text(
-                          TimeService().videoTime(_videoDuration),
+                          TimeService.videoTime(_videoDuration),
                         ),
                       ),
                     ),

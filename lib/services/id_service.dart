@@ -4,9 +4,10 @@ import 'package:note_repository/constants/app_id_codes.dart';
 import 'package:note_repository/models/group.dart';
 import 'package:note_repository/models/id_block.dart';
 import 'package:note_repository/models/note.dart';
+import 'package:note_repository/models/service.dart';
 import 'package:note_repository/services/time_service.dart';
 
-class IdService {
+class IdService extends Service {
   IdService._();
 
   static String _encode(IdBlock idBlock) {
@@ -49,7 +50,7 @@ class IdService {
       id += idCode;
     }
     id += AppIdCodes.idCodeSeparator;
-    id += TimeService().encode(idBlock.dateTime);
+    id += TimeService.encode(idBlock.dateTime);
     id += AppIdCodes.idCodeSeparator;
     id += idBlock.name;
     return id;
@@ -62,7 +63,7 @@ class IdService {
     idBlockCodes.removeAt(0);
     name = idBlockCodes.last;
     idBlockCodes.removeLast();
-    dateTime = TimeService().decode(idBlockCodes.last);
+    dateTime = TimeService.decode(idBlockCodes.last);
     idBlockCodes.removeLast();
     Map<String, dynamic> idBlockMap = {};
     List<String> splittedCode = [];

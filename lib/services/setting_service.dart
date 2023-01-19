@@ -3,10 +3,11 @@ import 'package:note_repository/constants/app_keys.dart';
 import 'package:note_repository/constants/app_paths.dart';
 import 'package:note_repository/constants/configurations/app_defaults.dart';
 import 'package:note_repository/constants/configurations/app_settings.dart';
+import 'package:note_repository/models/service.dart';
 import 'package:note_repository/models/setting.dart';
 import 'package:note_repository/services/storage_service.dart';
 
-class SettingService {
+class SettingService extends Service with Initable {
   factory SettingService() => _instance;
   static final SettingService _instance = SettingService._();
   SettingService._();
@@ -17,7 +18,8 @@ class SettingService {
   SettingNotifier<ThemeMode> get themeMode => _themeModeNotifier;
   SettingNotifier<LayoutMode> get layoutMode => _layoutModeNotifier;
 
-  Future<void> fetch() async {
+  @override
+  Future<void> init() async {
     final Map<String, dynamic> data = await StorageService.file.getData(AppPaths.settings);
     _themeModeNotifier = SettingNotifier(
       setting: AppSettings.themeMode,

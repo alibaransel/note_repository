@@ -5,22 +5,28 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:note_repository/constants/app_paths.dart';
 import 'package:note_repository/constants/configurations/app_defaults.dart';
+import 'package:note_repository/models/service.dart';
 import 'package:note_repository/services/path_service.dart';
 
-class StorageService {
+//TODO: Improve
+
+class StorageService extends Service with Initable {
+  factory StorageService() => _instance;
+  static final _instance = StorageService._();
   StorageService._();
 
   static const directory = _DirectoryService();
   static const file = _FileService();
 
-  static Future<void> prepare() async {
-    await PathService().fetch();
+  @override
+  Future<void> init() async {
+    await PathService().init();
     final File file = const _FileService().get(AppPaths.config);
     final bool exists = await file.exists();
-    if (!exists) await _prepare();
+    if (!exists) await _createDefaults();
   }
 
-  static Future<void> _prepare() async {
+  Future<void> _createDefaults() async {
     for (String directoryPath in AppDefaults.directoryPaths) {
       await const _DirectoryService().create(directoryPath);
     }
