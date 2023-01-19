@@ -3,12 +3,14 @@ import 'package:http/http.dart';
 import 'package:note_repository/services/storage_service.dart';
 
 class NetworkService {
+  NetworkService._();
+
   static const List<String> _checkURLs = [
     'google.com',
     'example.com',
   ];
 
-  Future<bool> hasInternet() async {
+  static Future<bool> hasInternet() async {
     try {
       bool internetStatus = false;
       List<InternetAddress> result = [];
@@ -26,7 +28,7 @@ class NetworkService {
     }
   }
 
-  Future<void> saveImageFromURL({required String path, required String imageURL}) async {
+  static Future<void> saveImageFromURL({required String path, required String imageURL}) async {
     Response response = await get(Uri.parse(imageURL));
     await StorageService.file.saveImage(
       path: path,

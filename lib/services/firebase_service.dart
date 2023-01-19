@@ -49,7 +49,7 @@ class FirebaseService {
   }
 
   static Future<void> _saveUserDataToDevice(User user) async {
-    await NetworkService().saveImageFromURL(
+    await NetworkService.saveImageFromURL(
       path: AppPaths.userImage,
       imageURL: user.photoURL!,
     );
@@ -91,7 +91,7 @@ class FirebaseService {
   }
 
   static Future<String> tryLoginWithGoogle() async {
-    if (!await NetworkService().hasInternet()) {
+    if (!await NetworkService.hasInternet()) {
       return AppKeys.internetError;
     }
 
