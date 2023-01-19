@@ -13,7 +13,7 @@ class AccountService {
   late Account _account;
 
   Account get account => _account;
-  bool get isLoggedIn => FirebaseService().isLoggedIn();
+  bool get isLoggedIn => FirebaseService.isLoggedIn();
 
   Future<void> _delete() async {
     await Future.wait([
@@ -36,11 +36,11 @@ class AccountService {
     );
   }
 
-  Future<String> tryLogin() async => await FirebaseService().tryLoginWithGoogle(); //TODO
+  Future<String> tryLogin() async => await FirebaseService.tryLoginWithGoogle(); //TODO
 
   Future<void> logOut() async {
     await Future.wait([
-      FirebaseService().logOut(),
+      FirebaseService.logOut(),
       _delete(),
       SettingService().setToDefaults(),
     ]);

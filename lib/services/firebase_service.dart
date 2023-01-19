@@ -10,7 +10,9 @@ import 'package:note_repository/services/storage_service.dart';
 import 'package:note_repository/services/time_service.dart';
 
 class FirebaseService {
-  Future<UserCredential> _loginWithGoogle() async {
+  FirebaseService._();
+
+  static Future<UserCredential> _loginWithGoogle() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
     final credential = GoogleAuthProvider.credential(
@@ -21,7 +23,7 @@ class FirebaseService {
     return userCredential;
   }
 
-  Future<void> _prepareUser(UserCredential userCredential) async {
+  static Future<void> _prepareUser(UserCredential userCredential) async {
     User? user = userCredential.user;
     AdditionalUserInfo? additionalUserInfo = userCredential.additionalUserInfo;
     if (user == null) throw AppKeys.error;
@@ -31,7 +33,7 @@ class FirebaseService {
     await _saveLoginInfo(user.uid);
   }
 
-  Future<void> _saveNewUserData(User user) async {
+  static Future<void> _saveNewUserData(User user) async {
     await FirebaseFirestore.instance
         .collection(AppKeys.users)
         .doc(user.uid)
@@ -46,7 +48,7 @@ class FirebaseService {
     });
   }
 
-  Future<void> _saveUserDataToDevice(User user) async {
+  static Future<void> _saveUserDataToDevice(User user) async {
     await NetworkService().saveImageFromURL(
       path: AppPaths.userImage,
       imageURL: user.photoURL!,
@@ -62,7 +64,7 @@ class FirebaseService {
     );
   }
 
-  Future<void> _saveLoginInfo(String uid) async {
+  static Future<void> _saveLoginInfo(String uid) async {
     DocumentSnapshot<Map<String, dynamic>> accountSnapshot = await FirebaseFirestore.instance
         .collection(AppKeys.users)
         .doc(uid)
@@ -88,7 +90,7 @@ class FirebaseService {
     });
   }
 
-  Future<String> tryLoginWithGoogle() async {
+  static Future<String> tryLoginWithGoogle() async {
     if (!await NetworkService().hasInternet()) {
       return AppKeys.internetError;
     }
@@ -102,9 +104,9 @@ class FirebaseService {
     }
   }
 
-  bool isLoggedIn() => FirebaseAuth.instance.currentUser != null;
+  static bool isLoggedIn() => FirebaseAuth.instance.currentUser != null;
 
-  Future<void> logOut() async {
+  static Future<void> logOut() async {
     await GoogleSignIn().disconnect();
     await FirebaseAuth.instance.signOut();
   }
