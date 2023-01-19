@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 abstract class Service {}
 
-abstract class Initable {
+mixin Initable on Service {
   bool _isInitialized = false;
 
   @protected
@@ -13,7 +13,7 @@ abstract class Initable {
   }
 }
 
-abstract class Stoppable {
+mixin Stoppable on Service {
   bool _isRunning = false;
 
   @protected
@@ -28,12 +28,19 @@ abstract class Stoppable {
   }
 }
 
-abstract class AutoStoppable extends Stoppable {
-  @protected
-  @override
-  void start() => super.start();
+mixin AutoStoppable on Service {
+  bool _isRunning = false;
 
   @protected
-  @override
-  void stop() => super.stop();
+  bool get isRunning => _isRunning;
+
+  @protected
+  void start() {
+    _isRunning = true;
+  }
+
+  @protected
+  void stop() {
+    _isRunning = false;
+  }
 }
