@@ -1,51 +1,39 @@
-//Currently not used
-//TODO: Research and improve
-
 import 'package:flutter/foundation.dart';
 
 abstract class Service {}
 
-abstract class InitableService extends Service with _Initable {
-  final VoidCallback _init;
+abstract class StaticService extends Service {}
 
-  InitableService(this._init);
+abstract class InitableService extends Service {
+  bool _isInitialized = false;
 
-  @override
+  bool get isInitialized => _isInitialized;
+
   void init() {
-    _init();
-    super.init();
+    _isInitialized = true;
   }
 }
 
-abstract class StoppableService extends Service with _Stoppable {}
+abstract class StoppableService extends InitableService {
+  bool _isRunning = false;
 
-abstract class InitableStoppableService extends Service with _Initable, _Stoppable {}
+  bool get isRunning => _isRunning;
 
-mixin _Initable on Service {
-  bool _initialized = false;
-
-  bool get isInitialized => _initialized;
-
-  @mustCallSuper
-  void init() {
-    _initialized = true;
-  }
-}
-
-mixin _Stoppable on Service {
-  bool _running = false;
-
-  bool get isRunning => _running;
-
-  @protected
-  @mustCallSuper
   void start() {
-    _running = true;
+    _isRunning = true;
   }
 
-  @protected
-  @mustCallSuper
   void stop() {
-    _running = false;
+    _isRunning = false;
   }
+}
+
+abstract class ProtectedStoppableService extends StoppableService {
+  @protected
+  @override
+  void start() => super.start();
+
+  @protected
+  @override
+  void stop() => super.stop();
 }
