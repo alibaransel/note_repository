@@ -49,17 +49,17 @@ class PathService {
   }
 
   String group({required String parentGroupPath, required GroupInfo groupInfo}) {
-    final String groupId = const IdService().encodeGroupInfo(groupInfo);
+    final String groupId = IdService.encodeGroupInfo(groupInfo);
     return '$parentGroupPath${AppPaths.groups}/$groupId';
   }
 
   String note({required String groupPath, required NoteInfo noteInfo}) {
-    final String noteId = const IdService().encodeNoteInfo(noteInfo);
+    final String noteId = IdService.encodeNoteInfo(noteInfo);
     return '$groupPath${AppPaths.notes}/$noteId${AppPaths.dataFileExtension}';
   }
 
   String noteFile(String id) {
-    final NoteType noteType = const IdService().decodeNoteInfo(id).type;
+    final NoteType noteType = IdService.decodeNoteInfo(id).type;
     final String noteTypePath = AppKeyMaps.noteTypePath[noteType]!;
     final String noteTypeFileExtension = AppKeyMaps.noteTypeFileExtension[noteType]!;
     return '$noteTypePath/$id$noteTypeFileExtension';

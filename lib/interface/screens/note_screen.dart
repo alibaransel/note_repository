@@ -75,7 +75,7 @@ class _NoteScreenState extends State<NoteScreen> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    _noteInfo = const IdService().decodeNoteInfo(PathService().id(widget.notePath));
+    _noteInfo = IdService.decodeNoteInfo(PathService().id(widget.notePath));
     WidgetsBinding.instance.addObserver(this);
     _fetch().then((_) {
       if (!mounted) return;

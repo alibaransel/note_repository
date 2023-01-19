@@ -74,7 +74,7 @@ class _GroupScreenState extends State<GroupScreen> {
 
   @override
   void initState() {
-    _groupInfo = const IdService().decodeGroupInfo(PathService().id(widget.groupPath));
+    _groupInfo = IdService.decodeGroupInfo(PathService().id(widget.groupPath));
     _parentGroupPath = PathService().parentGroup(widget.groupPath);
 
     SettingService().layoutMode.addListener(_listener);

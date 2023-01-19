@@ -7,9 +7,9 @@ import 'package:note_repository/models/note.dart';
 import 'package:note_repository/services/time_service.dart';
 
 class IdService {
-  const IdService();
+  IdService._();
 
-  String _encode(IdBlock idBlock) {
+  static String _encode(IdBlock idBlock) {
     String id = '';
     List<String> idCodes = [];
     String typeCode = '';
@@ -55,7 +55,7 @@ class IdService {
     return id;
   }
 
-  IdBlock _decode(String id) {
+  static IdBlock _decode(String id) {
     String name = '';
     DateTime dateTime;
     List<String> idBlockCodes = id.split(AppIdCodes.idCodeSeparator);
@@ -83,7 +83,7 @@ class IdService {
     );
   }
 
-  String encodeGroupInfo(GroupInfo groupInfo) {
+  static String encodeGroupInfo(GroupInfo groupInfo) {
     return _encode(
       IdBlock(
         itemType: Group,
@@ -94,7 +94,7 @@ class IdService {
     );
   }
 
-  GroupInfo decodeGroupInfo(String id) {
+  static GroupInfo decodeGroupInfo(String id) {
     IdBlock idBlock = _decode(id);
     return GroupInfo(
       name: idBlock.name,
@@ -103,7 +103,7 @@ class IdService {
     );
   }
 
-  String encodeNoteInfo(NoteInfo noteInfo) {
+  static String encodeNoteInfo(NoteInfo noteInfo) {
     return _encode(
       IdBlock(
         itemType: Note,
@@ -114,7 +114,7 @@ class IdService {
     );
   }
 
-  NoteInfo decodeNoteInfo(String id) {
+  static NoteInfo decodeNoteInfo(String id) {
     IdBlock idBlock = _decode(id);
     return NoteInfo(
       name: idBlock.name,

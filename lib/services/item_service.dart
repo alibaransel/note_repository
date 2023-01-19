@@ -56,7 +56,7 @@ class ItemService with ChangeNotifier {
   }
 
   void _deleteSubGroup(String id) {
-    final GroupInfo groupInfo = const IdService().decodeGroupInfo(id);
+    final GroupInfo groupInfo = IdService.decodeGroupInfo(id);
     _group.subGroupInfos.removeWhere((element) => element.name == groupInfo.name);
     notifyListeners();
   }
@@ -82,7 +82,7 @@ class ItemService with ChangeNotifier {
 
   Future<void> deleteNote(String notePath) async {
     await const _NoteService._().deleteNote(notePath);
-    final String name = const IdService().decodeNoteInfo(PathService().id(notePath)).name;
+    final String name = IdService.decodeNoteInfo(PathService().id(notePath)).name;
     _group.noteInfos.removeWhere(
       (element) => element.name == name,
     );
@@ -143,7 +143,7 @@ class _GroupService {
         await StorageService.file.getData(PathService().groupGroupIds(groupPath));
     final List<dynamic> groupIds = groupIdsData[AppKeys.data] ?? [];
     for (String groupId in groupIds) {
-      groupInfos.add(const IdService().decodeGroupInfo(groupId));
+      groupInfos.add(IdService.decodeGroupInfo(groupId));
     }
     return groupInfos;
   }
@@ -157,7 +157,7 @@ class _GroupService {
       if (ItemService()._isNameExist(name: newGroupInfo.name, ids: groupIds)) {
         return AppKeys.nameExist;
       }
-      groupIds.add(const IdService().encodeGroupInfo(newGroupInfo));
+      groupIds.add(IdService.encodeGroupInfo(newGroupInfo));
       await StorageService.file.setData(
         path: PathService().groupGroupIds(parentGroupPath),
         data: {
@@ -190,7 +190,7 @@ class _GroupService {
   Future<Group> getGroup(String groupPath) async {
     return Group(
       path: groupPath,
-      info: const IdService().decodeGroupInfo(PathService().id(groupPath)),
+      info: IdService.decodeGroupInfo(PathService().id(groupPath)),
       subGroupInfos: await getSubGroupInfos(groupPath),
       noteInfos: await const _NoteService._().getNoteInfos(groupPath),
     );
@@ -225,7 +225,7 @@ class _NoteService {
         await StorageService.file.getData(PathService().groupNoteIds(groupPath));
     final List<dynamic> noteIds = noteIdsData[AppKeys.data] ?? [];
     for (String noteId in noteIds) {
-      noteInfos.add(const IdService().decodeNoteInfo(noteId));
+      noteInfos.add(IdService.decodeNoteInfo(noteId));
     }
     return noteInfos;
   }
@@ -268,7 +268,7 @@ class _NoteService {
     bool deleteOriginalFile = true,
   }) async {
     try {
-      final String id = const IdService().encodeNoteInfo(noteInfo);
+      final String id = IdService.encodeNoteInfo(noteInfo);
       final Map<String, dynamic> noteIdsData =
           await StorageService.file.getData(PathService().groupNoteIds(groupPath));
       List<dynamic> noteIds = noteIdsData[AppKeys.data] ?? [];
@@ -308,7 +308,7 @@ class _NoteService {
   Future<Note> get(String notePath) async {
     return Note(
       path: notePath,
-      info: const IdService().decodeNoteInfo(PathService().id(notePath)),
+      info: IdService.decodeNoteInfo(PathService().id(notePath)),
       file: StorageService.file.get(PathService().noteFile(PathService().id(notePath))),
     );
   }
