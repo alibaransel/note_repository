@@ -7,8 +7,10 @@ mixin Initable on Service {
   bool _isInitialized = false;
 
   @protected
+  @nonVirtual
   bool get isInitialized => _isInitialized;
 
+  @mustCallSuper
   void init() {
     _isInitialized = true;
   }
@@ -18,12 +20,15 @@ mixin Stoppable on Service {
   bool _isRunning = false;
 
   @protected
+  @nonVirtual
   bool get isRunning => _isRunning;
 
+  @mustCallSuper
   void start() {
     _isRunning = true;
   }
 
+  @mustCallSuper
   void stop() {
     _isRunning = false;
   }
@@ -33,14 +38,17 @@ mixin AutoStoppable on Service {
   bool _isRunning = false;
 
   @protected
+  @nonVirtual
   bool get isRunning => _isRunning;
 
   @protected
+  @mustCallSuper
   void start() {
     _isRunning = true;
   }
 
   @protected
+  @mustCallSuper
   void stop() {
     _isRunning = false;
   }
