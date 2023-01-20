@@ -20,6 +20,7 @@ class _CommonLoadingIndicatorState extends State<CommonLoadingIndicator> {
 
   @override
   void initState() {
+    super.initState();
     Future.delayed(AppDurations.loadingIndicatorWait).then((_) {
       if (!mounted) return;
       //TODO: Fix (Not true solution, it must wait more and try again or run when mounted is true)
@@ -27,7 +28,6 @@ class _CommonLoadingIndicatorState extends State<CommonLoadingIndicator> {
         isWaiting = false;
       });
     });
-    super.initState();
   }
 
   @override

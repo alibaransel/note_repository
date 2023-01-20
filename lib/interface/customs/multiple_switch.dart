@@ -34,8 +34,8 @@ class _MultipleSwitchState extends State<MultipleSwitch> {
 
   @override
   void initState() {
-    widget.setting.addListener(_listener);
     super.initState();
+    widget.setting.addListener(_listener);
   }
 
   @override

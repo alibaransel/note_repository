@@ -33,9 +33,9 @@ class _CommonAutoTurnerState extends State<CommonAutoTurner> {
 
   @override
   void initState() {
+    super.initState();
     OrientationService().addListener(_deviceOrientationListener);
     _angle = OrientationService().value.angle;
-    super.initState();
   }
 
   @override

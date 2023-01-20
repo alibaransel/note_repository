@@ -41,10 +41,10 @@ class _AppState extends State<App> {
 
   @override
   void initState() {
+    super.initState();
     ServiceService.onAppInit();
     SettingService().themeMode.addListener(_themeModeListener);
     _themeMode = SettingService().themeMode.value;
-    super.initState();
   }
 
   @override

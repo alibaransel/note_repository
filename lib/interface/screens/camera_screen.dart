@@ -104,12 +104,12 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
 
   @override
   void initState() {
+    super.initState();
     WidgetsBinding.instance.addObserver(this);
     CameraService().addListener(
       _cameraListener,
       mediaCallback: _mediaProcess,
     );
-    super.initState();
   }
 
   /*

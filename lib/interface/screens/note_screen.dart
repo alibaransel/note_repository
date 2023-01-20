@@ -75,6 +75,7 @@ class _NoteScreenState extends State<NoteScreen> with WidgetsBindingObserver {
 
   @override
   void initState() {
+    super.initState();
     _noteInfo = IdService.decodeNoteInfo(PathService().id(widget.notePath));
     WidgetsBinding.instance.addObserver(this);
     _fetch().then((_) {
@@ -83,7 +84,6 @@ class _NoteScreenState extends State<NoteScreen> with WidgetsBindingObserver {
         _ready = true;
       });
     });
-    super.initState();
   }
 
   @override
@@ -94,7 +94,6 @@ class _NoteScreenState extends State<NoteScreen> with WidgetsBindingObserver {
         break;
       default:
     }
-    super.didChangeAppLifecycleState(state);
   }
 
   @override

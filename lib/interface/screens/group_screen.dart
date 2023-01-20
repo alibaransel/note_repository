@@ -74,6 +74,7 @@ class _GroupScreenState extends State<GroupScreen> {
 
   @override
   void initState() {
+    super.initState();
     _groupInfo = IdService.decodeGroupInfo(PathService().id(widget.groupPath));
     _parentGroupPath = PathService().parentGroup(widget.groupPath);
 
@@ -84,7 +85,6 @@ class _GroupScreenState extends State<GroupScreen> {
       });
     });
     _scrollController.addListener(_scrollListener);
-    super.initState();
   }
 
   @override
