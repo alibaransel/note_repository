@@ -21,6 +21,7 @@ class SettingService extends Service with Initable {
 
   @override
   Future<void> init() async {
+    if (isInitialized) return;
     final Map<String, dynamic> data = await StorageService.file.getData(AppPaths.settings);
     _themeModeNotifier = SettingNotifier(
       setting: AppSettings.themeMode,
@@ -30,6 +31,7 @@ class SettingService extends Service with Initable {
       setting: AppSettings.layoutMode,
       firstValue: LayoutMode.values.byName(data[AppKeys.layoutMode]),
     );
+    super.init();
   }
 
   Future<void> setToDefaults() async {

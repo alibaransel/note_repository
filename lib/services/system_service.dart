@@ -10,12 +10,16 @@ class SystemService extends Service with Stoppable, WidgetsBindingObserver {
 
   @override
   void start() {
+    if (isRunning) return;
     WidgetsBinding.instance.addObserver(this);
+    super.start();
   }
 
   @override
   void stop() {
+    if (!isRunning) return;
     WidgetsBinding.instance.removeObserver(this);
+    super.stop();
   }
 
   @override

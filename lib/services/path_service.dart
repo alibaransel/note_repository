@@ -16,8 +16,10 @@ class PathService extends Service with Initable {
 
   @override
   Future<void> init() async {
+    if (isInitialized) return;
     final Directory directory = await getApplicationDocumentsDirectory();
     _corePath = directory.path;
+    super.init();
   }
 
   String fullPath(String path) {

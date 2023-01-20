@@ -20,10 +20,12 @@ class StorageService extends Service with Initable {
 
   @override
   Future<void> init() async {
+    if (isInitialized) return;
     await PathService().init();
     final File file = const _FileService().get(AppPaths.config);
     final bool exists = await file.exists();
     if (!exists) await _createDefaults();
+    super.init();
   }
 
   Future<void> _createDefaults() async {
