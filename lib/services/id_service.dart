@@ -66,13 +66,13 @@ class IdService extends Service {
     dateTime = TimeService.decode(idBlockCodes.last);
     idBlockCodes.removeLast();
     Map<String, dynamic> idBlockMap = {};
-    List<String> splittedCode = [];
+    List<String> splitCode = [];
     String typeCode = '';
     String dataCode = '';
     for (var idBlockCode in idBlockCodes) {
-      splittedCode = idBlockCode.split(AppIdCodes.idCodeTypeSeparator);
-      typeCode = splittedCode[0];
-      dataCode = splittedCode[1];
+      splitCode = idBlockCode.split(AppIdCodes.idCodeTypeSeparator);
+      typeCode = splitCode[0];
+      dataCode = splitCode[1];
       idBlockMap[typeCode] = AppIdCodeMaps.codeTypeMap[typeCode]![dataCode];
     }
     return IdBlock(
