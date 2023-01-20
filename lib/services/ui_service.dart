@@ -22,7 +22,7 @@ class UIService extends Service {
   }
 
   static Future<void> hideOverlays() async {
-    await _setUIMode(SystemUiMode.leanBack);
+    await _setUIMode(SystemUiMode.manual, overlays: []);
   }
 
   static Future<void> restoreOverlays() async {
