@@ -3,6 +3,7 @@ import 'package:note_repository/constants/app_keys.dart';
 import 'package:note_repository/constants/app_paths.dart';
 import 'package:note_repository/constants/configurations/app_defaults.dart';
 import 'package:note_repository/constants/configurations/app_settings.dart';
+import 'package:note_repository/models/notifiers.dart';
 import 'package:note_repository/models/service.dart';
 import 'package:note_repository/models/setting.dart';
 import 'package:note_repository/services/storage_service.dart';
@@ -37,7 +38,7 @@ class SettingService extends Service with Initable {
   }
 }
 
-class SettingNotifier<T extends Enum> extends ValueNotifier<T> {
+class SettingNotifier<T extends Enum> extends SafeValueNotifier<T> {
   final Setting<T> setting;
 
   SettingNotifier({
