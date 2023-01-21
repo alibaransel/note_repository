@@ -33,7 +33,6 @@ class NoteScreen extends StatefulWidget {
 }
 
 class _NoteScreenState extends State<NoteScreen> with WidgetsBindingObserver {
-  //TODO: What is micro task ?
   //TODO: Optimize for performance with widget usage
   //TODO: Combine common design constants
   //TODO: Improve performance
@@ -184,8 +183,6 @@ class _NoteScreenState extends State<NoteScreen> with WidgetsBindingObserver {
     return InteractiveViewer(
       minScale: 1,
       maxScale: 4,
-      //constrained: false,
-      //boundaryMargin: const EdgeInsets.all(double.infinity),
       child: Center(
         child: Image.file(_note.file),
       ),

@@ -170,7 +170,6 @@ class _GroupService {
       );
       await StorageService.directory.create(newGroupPath);
       await StorageService.file.setData(
-        //TODO: Move notes to Notion from note.txt
         //TODO: Separate create and set(or update) methods for prevent confusion and improve readability of code
         path: PathService().groupGroupIds(newGroupPath),
         data: {AppKeys.data: []},

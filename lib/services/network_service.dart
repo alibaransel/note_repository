@@ -24,7 +24,6 @@ class NetworkService extends Service {
       }
       return internetStatus;
     } on SocketException catch (_) {
-      //TODO: Remove 'catch (_)' ?!
       return false;
     }
   }

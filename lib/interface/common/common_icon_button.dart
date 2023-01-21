@@ -34,7 +34,7 @@ class CommonIconButton extends StatelessWidget {
     this.onLongPress,
   });
 
-  //TODO: Add tap feedbacs (animations, sounds and vibrations)
+  //TODO: Add tap feedbacks (animations, sounds and vibrations)
 
   @override
   Widget build(BuildContext context) {

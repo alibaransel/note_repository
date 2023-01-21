@@ -28,8 +28,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   static const Curve _scaleAnimationCurve = AppCurves.scale;
   static const Duration _scaleAnimationDuration = AppDurations.m;
 
-  final List<dynamic> _colorList = //TODO: Is static keyword usage correct?
-      AppIdCodeMaps.codeTypeMap[AppIdCodes.color]!.values.toList();
+  final List<dynamic> _colorList = AppIdCodeMaps.codeTypeMap[AppIdCodes.color]!.values.toList();
 
   final TextEditingController _groupNameTextController = TextEditingController();
 

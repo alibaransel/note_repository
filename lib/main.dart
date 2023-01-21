@@ -11,8 +11,6 @@ void main() async {
   runApp(const App());
 }
 
-//TODO: String formatter
-//TODO: Prepare service
 //TODO: Data security
 //TODO: Onboarding screen
 //TODO: Check and optimize services
