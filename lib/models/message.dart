@@ -15,8 +15,8 @@ class InfoMessage extends Message {
   static const Color iconColor = AppColors.infoMessageIcon;
 }
 
-class ErrorMessage extends Message {
-  const ErrorMessage([super.text]);
+class ExceptionMessage extends Message implements Exception {
+  const ExceptionMessage([super.text]);
 
   static const IconData icon = AppIcons.errorMassage;
   static const Color iconColor = AppColors.errorMessageIcon;

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:note_repository/constants/app_error_messages.dart';
+import 'package:note_repository/constants/app_exception_messages.dart';
 import 'package:note_repository/constants/app_keys.dart';
 import 'package:note_repository/models/service.dart';
 import 'package:note_repository/services/network_service.dart';
@@ -13,17 +13,14 @@ class FirebaseService extends Service {
   static bool isLoggedIn() => FirebaseAuth.instance.currentUser != null;
 
   static Future<User> loginWithGoogle() async {
-    if (!await NetworkService.hasInternet()) {
-      return Future.error(AppErrorMessages.noInternet);
-    }
-
+    if (!await NetworkService.hasInternet()) throw AppExceptionMessages.noInternet;
     UserCredential userCredential = await _loginWithGoogle();
-    if (userCredential.user == null) return Future.error(AppErrorMessages.error);
+    if (userCredential.user == null) throw AppExceptionMessages.error;
     final User user = userCredential.user!;
     if (userCredential.additionalUserInfo == null) {
-      return Future.error(AppErrorMessages.error);
+      throw AppExceptionMessages.error;
     } //TODO
-    if (userCredential.additionalUserInfo!.isNewUser) _createNewUserData(user);
+    if (await _isUserNew(userCredential, user)) _createNewUserData(user);
     await _saveLoginInfo(user.uid);
     return user;
   }
@@ -42,6 +39,12 @@ class FirebaseService extends Service {
     );
     UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
     return userCredential;
+  }
+
+  static Future<bool> _isUserNew(UserCredential userCredential, User user) async {
+    final AdditionalUserInfo? additionalUserInfo = userCredential.additionalUserInfo;
+    if (additionalUserInfo != null) return additionalUserInfo.isNewUser;
+    return !(await FirebaseFirestore.instance.collection(AppKeys.users).doc(user.uid).get()).exists;
   }
 
   static Future<void> _createNewUserData(User user) async {
@@ -69,7 +72,7 @@ class FirebaseService extends Service {
 
     Map<String, dynamic>? accountData = accountSnapshot.data();
 
-    if (accountData == null) return Future.error(AppErrorMessages.error);
+    if (accountData == null) throw AppExceptionMessages.error;
 
     List<dynamic> loginHistory = accountData[AppKeys.loginHistory];
 

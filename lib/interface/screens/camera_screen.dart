@@ -1,7 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:note_repository/constants/app_error_messages.dart';
+import 'package:note_repository/constants/app_exception_messages.dart';
 import 'package:note_repository/constants/app_keys.dart';
 import 'package:note_repository/constants/app_strings.dart';
 import 'package:note_repository/constants/design/app_colors.dart';
@@ -80,7 +80,7 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
     );
     NavigationService().hide(); //TODO
     if (response == AppKeys.error) {
-      NavigationService().showSnackBar(AppErrorMessages.error);
+      NavigationService().showSnackBar(AppExceptionMessages.error);
     }
   }
 
