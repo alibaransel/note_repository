@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:note_repository/constants/app_keys.dart';
 import 'package:note_repository/constants/app_paths.dart';
-import 'package:note_repository/constants/app_strings.dart';
 import 'package:note_repository/constants/design/app_icons.dart';
 import 'package:note_repository/models/note.dart';
 
@@ -17,12 +16,6 @@ class AppKeyMaps {
     NoteType.image: AppIcons.image,
     NoteType.video: AppIcons.video,
     NoteType.audio: AppIcons.audio,
-  };
-
-  static const Map<String, String> loginSnackBarText = {
-    AppKeys.internetError: AppStrings.loginSnackBarInternetError,
-    AppKeys.error: AppStrings.pleaseTryAgain,
-    AppKeys.done: AppStrings.loginSnackBarDone,
   };
 
   static const Map<NoteType, String> noteTypePath = {

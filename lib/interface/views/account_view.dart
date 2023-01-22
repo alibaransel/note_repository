@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:note_repository/constants/app_info_messages.dart';
 import 'package:note_repository/constants/design/app_colors.dart';
 import 'package:note_repository/constants/app_key_maps.dart';
 import 'package:note_repository/constants/design/app_sizes.dart';
@@ -70,9 +71,9 @@ class AccountView extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () async {
-                  await AccountService().logOut();
+                  await AccountService().logOut(); //TODO
                   NavigationService().show(NavigationRoute.login);
-                  NavigationService().showSnackBar(AppStrings.logoutSnackBar);
+                  NavigationService().showSnackBar(AppInfoMessages.logoutDone);
                 },
                 child: Container(
                   height: AppSizes.m,

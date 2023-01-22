@@ -27,16 +27,16 @@ class AppStrings {
 
   static const String logOut = 'Log Out';
 
-  static const String pleaseTryAgain = 'Please try again';
-
-  static const String loginSnackBarInternetError = 'Please check your internet connection';
-  static const String loginSnackBarDone = 'Successfully logged in';
-  static const String logoutSnackBar = 'Successfully logged out';
-
   static const String import = 'Import';
 
   static const String infoBodyError = 'Error';
   static const String infoBodyEmpty = 'Empty';
   static const String infoBodyPermissionDenied = 'Please give permissions on device settings';
   static const String infoBodyNoCamera = 'Camera not detected';
+
+  static const String loginDoneInfo = 'Successfully logged in';
+  static const String logoutDoneInfo = 'Successfully logged out';
+
+  static const String error = 'Error, please try again';
+  static const String noInternetError = 'Please check your internet connection';
 }

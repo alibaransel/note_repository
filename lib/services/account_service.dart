@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:note_repository/constants/app_keys.dart';
 import 'package:note_repository/constants/app_paths.dart';
 import 'package:note_repository/models/account.dart';
 import 'package:note_repository/models/service.dart';
 import 'package:note_repository/services/firebase_service.dart';
+import 'package:note_repository/services/network_service.dart';
 import 'package:note_repository/services/setting_service.dart';
 import 'package:note_repository/services/storage_service.dart';
 
@@ -22,7 +24,22 @@ class AccountService extends Service with Initable {
     super.init();
   }
 
-  Future<String> tryLogin() async => await FirebaseService.tryLoginWithGoogle(); //TODO
+  Future<void> login() async {
+    final User user = await FirebaseService.loginWithGoogle();
+    await NetworkService.saveImageFromURL(
+      path: AppPaths.userImage,
+      imageURL: user.photoURL!,
+    );
+    await AccountService().set(
+      Account(
+        uid: user.uid,
+        name: user.displayName!,
+        email: user.email!,
+        image: await StorageService.file.getImage(AppPaths.userImage),
+        loginType: AppKeys.google,
+      ),
+    );
+  }
 
   Future<void> set(Account newAccount) async {
     _account = newAccount;

@@ -12,6 +12,7 @@ import 'package:note_repository/interface/screens/home_screen.dart';
 import 'package:note_repository/interface/screens/login_screen.dart';
 import 'package:note_repository/interface/screens/settings_screen.dart';
 import 'package:note_repository/interface/views/create_group_view.dart';
+import 'package:note_repository/models/message.dart';
 import 'package:note_repository/models/service.dart';
 
 class NavigationService extends Service {
@@ -22,6 +23,8 @@ class NavigationService extends Service {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
   GlobalKey<NavigatorState> get navigatorKey => _navigatorKey;
+
+  BuildContext get _context => _navigatorKey.currentContext!;
 
   void hide() {
     _navigatorKey.currentState!.maybePop();
@@ -43,7 +46,7 @@ class NavigationService extends Service {
         break;
       case NavigationRouteType.bottomSheet:
         showModalBottomSheet(
-          context: _navigatorKey.currentContext!,
+          context: _context,
           isScrollControlled: true,
           barrierColor: Colors.transparent,
           backgroundColor: Colors.transparent,
@@ -52,7 +55,7 @@ class NavigationService extends Service {
         break;
       case NavigationRouteType.popup:
         showCupertinoModalPopup(
-          context: _navigatorKey.currentContext!,
+          context: _context,
           barrierColor: Colors.transparent,
           filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
           builder: (context) => navigationRoute.widget,
@@ -61,10 +64,10 @@ class NavigationService extends Service {
     }
   }
 
-  void showSnackBar(String text) {
-    final BuildContext context = _navigatorKey.currentContext!;
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
+  void showSnackBar(Message message) {
+    if (message.text.isEmpty) return;
+    ScaffoldMessenger.of(_context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(_context).showSnackBar(
       SnackBar(
         elevation: 0,
         duration: AppDurations.snackBar,
@@ -93,7 +96,7 @@ class NavigationService extends Service {
                 ],
               ),
               child: Text(
-                text,
+                message.text,
               ),
             ),
           ],

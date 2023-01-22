@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:note_repository/constants/app_error_messages.dart';
+import 'package:note_repository/constants/app_info_messages.dart';
 import 'package:note_repository/constants/design/app_colors.dart';
-import 'package:note_repository/constants/app_key_maps.dart';
 import 'package:note_repository/constants/app_keys.dart';
 import 'package:note_repository/constants/design/app_durations.dart';
 import 'package:note_repository/constants/design/app_icons.dart';
 import 'package:note_repository/constants/design/app_sizes.dart';
 import 'package:note_repository/constants/app_strings.dart';
 import 'package:note_repository/interface/common/common_loading_indicator.dart';
+import 'package:note_repository/models/message.dart';
 import 'package:note_repository/services/navigation_service.dart';
 import 'package:note_repository/services/account_service.dart';
 
@@ -25,14 +27,15 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _buttonStatus = false;
     });
-    final String loginTryResult = await AccountService().tryLogin();
-    if (loginTryResult == AppKeys.done) {
+    await AccountService().login().then((_) {
       NavigationService().show(NavigationRoute.home);
-    }
+      NavigationService().showSnackBar(AppInfoMessages.loginDone);
+    }).catchError((e) {
+      NavigationService().showSnackBar(e is ErrorMessage ? e : AppErrorMessages.error);
+    });
     setState(() {
       _buttonStatus = true;
     });
-    NavigationService().showSnackBar(AppKeyMaps.loginSnackBarText[loginTryResult]!);
   }
 
   @override

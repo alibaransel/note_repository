@@ -21,4 +21,7 @@ class AppColors {
 
   static const double backgroundOpacityS = 0.1;
   static const double backgroundOpacityM = 0.3;
+
+  static const Color infoMessageIcon = Colors.blue;
+  static const Color errorMessageIcon = Colors.red;
 }

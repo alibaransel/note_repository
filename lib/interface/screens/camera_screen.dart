@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:note_repository/constants/app_error_messages.dart';
 import 'package:note_repository/constants/app_keys.dart';
 import 'package:note_repository/constants/app_strings.dart';
 import 'package:note_repository/constants/design/app_colors.dart';
@@ -13,6 +14,7 @@ import 'package:note_repository/interface/common/common_background.dart';
 import 'package:note_repository/interface/common/common_icon_button.dart';
 import 'package:note_repository/interface/common/common_info_body.dart';
 import 'package:note_repository/interface/common/common_loading_indicator.dart';
+import 'package:note_repository/models/message.dart';
 import 'package:note_repository/models/note.dart';
 import 'package:note_repository/services/camera_service.dart';
 import 'package:note_repository/services/navigation_service.dart';
@@ -78,7 +80,7 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
     );
     NavigationService().hide(); //TODO
     if (response == AppKeys.error) {
-      NavigationService().showSnackBar(AppStrings.pleaseTryAgain);
+      NavigationService().showSnackBar(AppErrorMessages.error);
     }
   }
 
@@ -87,7 +89,7 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
     if (result == AppKeys.done) {
       NavigationService().hide();
     }
-    NavigationService().showSnackBar(result);
+    NavigationService().showSnackBar(InfoMessage(result));
   }
 
   Future<void> _changeCameraSettingBox(CameraSetting newCameraSetting) async {

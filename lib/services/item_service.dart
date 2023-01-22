@@ -127,7 +127,7 @@ class ItemService with ChangeNotifier {
     } else if (allowedAudioExtensions.contains(pickedFileExtension)) {
       noteType = NoteType.audio;
     }
-    if (noteType == null) throw '';
+    if (noteType == null) throw ''; //TODO
     String result = await tryCreateNote(type: noteType, realMediaPath: pickedFilePath);
     await FilePicker.platform.clearTemporaryFiles();
     return result;

@@ -61,4 +61,7 @@ class AppIcons {
   static const IconData layoutModeGrid = Icons.grid_on_rounded;
 
   static const IconData noCamera = Icons.disabled_by_default_rounded;
+
+  static const IconData infoMassage = Icons.info_outline_rounded;
+  static const IconData errorMassage = Icons.info_outline_rounded;
 }
