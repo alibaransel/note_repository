@@ -10,7 +10,6 @@ void main() async {
   await ServiceService.beforeAppRun();
   runApp(const App());
 }
-
 //TODO: Data security
 //TODO: Onboarding screen
 //TODO: Check and optimize services
