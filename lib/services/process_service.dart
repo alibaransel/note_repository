@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:note_repository/models/isolate_message_pair.dart';
 import 'package:note_repository/models/service.dart';
 import 'package:note_repository/services/isolate_service.dart';
 

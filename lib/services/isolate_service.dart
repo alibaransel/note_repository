@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:isolate';
 
+import 'package:note_repository/models/isolate_message_pair.dart';
 import 'package:note_repository/models/service.dart';
 
 class IsolateService extends Service
@@ -62,14 +63,4 @@ class IsolateService extends Service
       }
     }
   }
-}
-
-class IsolateMessagePair<ST, RT> {
-  final ST sended;
-  final RT received;
-
-  const IsolateMessagePair({
-    required this.sended,
-    required this.received,
-  });
 }
