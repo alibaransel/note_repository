@@ -43,7 +43,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   Future<void> tryCreateGroup() async {
     if (_groupNameTextController.text.isEmpty) {
       setState(() {
-        _alertText = 'Please enter name'; //TODO
+        _alertText = 'Please enter name'; //TODO: Use constants
       });
       return;
     }

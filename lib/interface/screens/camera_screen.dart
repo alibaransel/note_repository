@@ -539,7 +539,7 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
   }
 }
 
-//TODO
+//TODO: Use Setting class
 class CameraSetting<DataType> {
   final Future<void> Function(DataType data) changeFunction;
   final List<CameraSettingOption<DataType>> options;

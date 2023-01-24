@@ -12,7 +12,7 @@ class ProcessService extends Service with Initable {
   ProcessService._();
 
   //TODO: Implement this service to other services
-  //TODO: Research solution whitch is better then while-delay
+  //TODO: Research solution which is better then while-delay
   static const _resultCheckDuration = Duration(milliseconds: 100);
   static const _processQueueCheckDuration = Duration(milliseconds: 100);
 

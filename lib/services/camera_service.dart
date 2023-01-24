@@ -40,21 +40,22 @@ class CameraService {
   List<int> get frontCameraIndexes => _frontCameraIndexes;
   List<int> get backCameraIndexes => _backCameraIndexes;
   List<int> get externalCameraIndexes => _externalCameraIndexes;
-  FlashMode get flashMode => _controller.value.flashMode; //TODO
+  FlashMode get flashMode => _controller.value.flashMode; //TODO: Don't use directly getter
   FocusMode get focusMode => _controller.value.focusMode;
   Offset get focusAndExposurePoint => _focusAndExposurePoint;
   bool get focusOrExposurePointSupported => _focusPointSupported || _exposurePointSupported;
 
   void _appStateListener() async {
+    //TODO: Improve this listener
     switch (SystemService().appState.value) {
       case AppLifecycleState.paused:
         await _stop();
-        _statusNotifier.value = CameraStatus.inactive; //TODO
+        _statusNotifier.value = CameraStatus.inactive;
         break;
       case AppLifecycleState.resumed:
         _statusNotifier.value = CameraStatus.starting;
         await _start();
-        _statusNotifier.value = CameraStatus.ready; //TODO
+        _statusNotifier.value = CameraStatus.ready;
         break;
       default:
     }

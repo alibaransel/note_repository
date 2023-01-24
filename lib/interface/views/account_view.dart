@@ -71,7 +71,7 @@ class AccountView extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () async {
-                  await AccountService().logOut(); //TODO
+                  await AccountService().logOut(); //TODO: Implement exception and error conditions
                   NavigationService().show(NavigationRoute.login);
                   NavigationService().showSnackBar(AppInfoMessages.logoutDone);
                 },
