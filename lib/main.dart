@@ -10,6 +10,7 @@ void main() async {
   await ServiceService.beforeAppRun();
   runApp(const App());
 }
+//TODO: Use FlutterFire CLI to recreate project with Firebase
 //TODO: Data security
 //TODO: Onboarding screen
 //TODO: Check and optimize services

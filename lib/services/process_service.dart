@@ -1,68 +1,84 @@
+import 'dart:async';
 import 'dart:io';
-import 'dart:isolate';
 
 import 'package:note_repository/models/service.dart';
+import 'package:note_repository/services/isolate_service.dart';
+
+typedef ProcessFunction<T> = FutureOr<T> Function();
 
 class ProcessService extends Service with Initable {
   factory ProcessService() => _instance;
   static final _instance = ProcessService._();
   ProcessService._();
 
-  late final int _threadCount;
-  late final int _maxUsableThreadCount;
-  List<Isolate> isolates = [];
-  //TODO: Remove prints
+  //TODO: Implement this service to other services
+  //TODO: Research solution whitch is better then while-delay
+  static const _resultCheckDuration = Duration(milliseconds: 100);
+  static const _processQueueCheckDuration = Duration(milliseconds: 100);
+
+  final List<ProcessFunction> _processFunctionQueue = [];
+  final Map<ProcessFunction, dynamic> _processResultsMap = {};
+
+  late final int _maxIsolateCount;
+  late final bool _multiIsolateSupported;
+
+  late IsolateService _isolateService; //TODO: Make list
+
+  bool _isProcessing = false;
+  int _busyIsolateCount = 1;
+
+  int get _availableIsolateCount => _maxIsolateCount - _busyIsolateCount;
+  bool get _hasAvailableIsolate => _availableIsolateCount > 0;
 
   @override
   Future<void> init() async {
-    _threadCount = Platform.numberOfProcessors;
-    _maxUsableThreadCount = _threadCount - 1;
-    await _createIsolate(); //TODO
+    _maxIsolateCount = Platform.numberOfProcessors;
+    _multiIsolateSupported = _maxIsolateCount > 1;
+    if (_hasAvailableIsolate) await _createIsolate();
     super.init();
   }
 
+  Future<T> process<T extends Object?>(ProcessFunction<T> processFunction) async {
+    if (!_multiIsolateSupported) return processFunction();
+    _processFunctionQueue.add(processFunction);
+    if (!_isProcessing) _startProcessing();
+    while (true) {
+      if (_processResultsMap.containsKey(processFunction)) break;
+      await Future.delayed(_resultCheckDuration);
+    }
+    final result = _processResultsMap[processFunction];
+    _processResultsMap.remove(processFunction);
+    return result;
+  }
+
   Future<void> _createIsolate() async {
-    ReceivePort receivePort = ReceivePort();
-    print("Isolate spawning");
-    Isolate isolate = await Isolate.spawn(_isolateLifecycle, receivePort.sendPort);
-    print("Isolate spawned");
-    late final SendPort sendPort; //= await receivePort.first;
-    receivePort.listen((data) {
-      if (data is SendPort) {
-        sendPort = data;
-        print("Send port ready");
-      }
-      if (data == "done") {
-        print("Function done verified");
-      }
-    });
-    for (int i = 0; i < 3; i++) {
-      print("$i Waiting");
-      await Future.delayed(const Duration(seconds: 3));
-      print("$i Sending function");
-      sendPort.send(() {
-        print(DateTime.now());
-      });
-      print("$i Function sended");
-    }
-    print("Stopping isolate");
-    sendPort.send(null);
+    if (!_hasAvailableIsolate) return;
+    _busyIsolateCount += 1;
+    final IsolateService isolateService = IsolateService();
+    await isolateService.init();
+    isolateService.addListener(_messageListener);
+    _isolateService = isolateService;
   }
-}
 
-void _isolateLifecycle(final SendPort sendPort) async {
-  final ReceivePort receivePort = ReceivePort();
-
-  sendPort.send(receivePort.sendPort);
-
-  await for (final message in receivePort) {
-    if (message is Function) {
-      message.call();
-      sendPort.send("done");
-    } else if (message == null) {
-      break;
-    }
+  _startProcessing() {
+    _isProcessing = true;
+    return _processing();
   }
-  print("Isolate exiting");
-  Isolate.exit();
+
+  _processing() async {
+    while (_processFunctionQueue.isNotEmpty) {
+      if (!_isolateService.isBusy) {
+        final ProcessFunction processFunction = _processFunctionQueue.first;
+        _processFunctionQueue.removeAt(0);
+        _isolateService.send(processFunction);
+      }
+      await Future.delayed(_processQueueCheckDuration);
+    }
+    _isProcessing = false;
+  }
+
+  _messageListener() {
+    final IsolateMessagePair messagePair = _isolateService.value!;
+    _processResultsMap[messagePair.sended] = messagePair.received;
+  }
 }

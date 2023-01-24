@@ -16,6 +16,24 @@ mixin Initable on Service {
   }
 }
 
+mixin Disposable on Service {
+  bool _isInitialized = false;
+
+  @protected
+  @nonVirtual
+  bool get isInitialized => _isInitialized;
+
+  @mustCallSuper
+  void init() {
+    _isInitialized = true;
+  }
+
+  @mustCallSuper
+  void dispose() {
+    _isInitialized = false;
+  }
+}
+
 mixin Stoppable on Service {
   bool _isRunning = false;
 
