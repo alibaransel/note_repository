@@ -6,6 +6,10 @@ import 'package:note_repository/models/service.dart';
 
 class IsolateService extends Service
     with Disposable, Stoppable, ValueNotifiable<IsolateMessagePair?> {
+  final String? name;
+
+  IsolateService({this.name});
+
   final ReceivePort _receivePort = ReceivePort();
   late final Isolate _isolate;
   late final SendPort _sendPort;
@@ -20,7 +24,7 @@ class IsolateService extends Service
   @override
   Future<void> init() async {
     if (isInitialized) return;
-    _isolate = await Isolate.spawn(_isolateLifecycle, _receivePort.sendPort);
+    _isolate = await Isolate.spawn(_isolateLifecycle, _receivePort.sendPort, debugName: name);
     _messageStreamSubscription = _receivePort.listen(_messageListener);
     super.initNotifier(null);
     super.init();
@@ -28,9 +32,11 @@ class IsolateService extends Service
 
   @override
   void dispose() {
+    _isBusy = true;
     _isolate.kill(priority: Isolate.immediate);
-    _isBusy = false;
+    _receivePort.close();
     _messageStreamSubscription.cancel();
+    _isBusy = false;
     super.disposeNotifier();
     super.dispose();
   }
