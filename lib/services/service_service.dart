@@ -20,12 +20,12 @@ class ServiceService extends Service {
   }
 
   static Future<void> onAppInit() async {
-    SystemService().start();
+    SystemService().init();
     await UIService.setDefaults();
   }
 
   static void onAppDispose() {
-    SystemService().stop();
+    SystemService().dispose();
   }
 
   static Future<void> onSplashScreen() async {
