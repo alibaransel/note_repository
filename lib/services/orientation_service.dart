@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
 import 'package:note_repository/constants/angles.dart';
+import 'package:note_repository/models/service.dart';
 import 'package:note_repository/services/system_service.dart';
 
-class OrientationService extends ValueNotifier<DeviceOrientation> {
+class OrientationService extends Service
+    with Disposable, AutoStoppable, ValueNotifiable<DeviceOrientation> {
   factory OrientationService() => _instance;
   static final OrientationService _instance = OrientationService._();
-  OrientationService._() : super(_defaultOrientation);
+  OrientationService._();
 
   static const DeviceOrientation _defaultOrientation = DeviceOrientation.portraitUp;
   static const Duration _waitDurationBeforeNotify = Duration(milliseconds: 400);
@@ -25,60 +27,66 @@ class OrientationService extends ValueNotifier<DeviceOrientation> {
 
   late StreamSubscription<NativeDeviceOrientation> _nativeOrientationStreamSubscription;
 
-  void _appStateListener() {
-    switch (SystemService().appState.value) {
-      case AppLifecycleState.paused:
-        _stop();
-        break;
-      case AppLifecycleState.resumed:
-        _start();
-        break;
-      default:
-    }
+  @override
+  void init() {
+    if (isInitialized) return;
+    super.initNotifier(_defaultOrientation);
+    super.init();
+  }
+
+  @override
+  void dispose() {
+    if (isNotInitialized) return;
+    super.disposeNotifier();
+    super.dispose();
+  }
+
+  @override
+  @protected
+  void start() {
+    if (isRunning) return;
+    SystemService().appState.addListener(_appStateListener);
+    _nativeDeviceOrientationCommunicator.resume();
+    _nativeOrientationStreamSubscription =
+        _nativeOrientationStream.listen(_nativeOrientationListener);
+    super.start();
+  }
+
+  @override
+  @protected
+  Future<void> stop() async {
+    if (isNotRunning) return;
+    _notifyTimer.cancel();
+    super.value = _defaultOrientation;
+    angleChange = 0;
+    SystemService().appState.removeListener(_appStateListener);
+    await _nativeDeviceOrientationCommunicator.pause();
+    await _nativeOrientationStreamSubscription.cancel();
+    super.stop();
   }
 
   @override
   void addListener(VoidCallback listener) {
-    if (!hasListeners) {
-      _start();
-      SystemService().appState.addListener(_appStateListener);
-    }
+    if (super.hasNoListeners) start();
     super.addListener(listener);
   }
 
   @override
   void removeListener(VoidCallback listener) {
     super.removeListener(listener);
-    if (!hasListeners) {
-      _stop();
-      SystemService().appState.removeListener(_appStateListener);
+    if (super.hasNoListeners) stop();
+  }
+
+  void _appStateListener() {
+    switch (SystemService().appState.value) {
+      case AppLifecycleState.paused:
+        stop();
+        break;
+      case AppLifecycleState.resumed:
+        start();
+        break;
+      default:
     }
-  }
-
-  @protected
-  @override
-  set value(DeviceOrientation newValue);
-
-  void _start() {
-    _startListening();
-  }
-
-  Future<void> _stop() async {
-    _notifyTimer.cancel();
-    super.value = _defaultOrientation;
-    angleChange = 0;
-    await _stopListening();
-  }
-
-  void _startListening() {
-    _nativeDeviceOrientationCommunicator.resume();
-    _nativeOrientationStreamSubscription =
-        _nativeOrientationStream.listen(_nativeOrientationListener);
-  }
-
-  Future<void> _stopListening() async {
-    await _nativeDeviceOrientationCommunicator.pause();
-    await _nativeOrientationStreamSubscription.cancel();
   }
 
   void _nativeOrientationListener(NativeDeviceOrientation nativeOrientation) {

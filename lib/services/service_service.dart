@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:note_repository/models/service.dart';
 import 'package:note_repository/services/account_service.dart';
 import 'package:note_repository/services/camera_service.dart';
+import 'package:note_repository/services/orientation_service.dart';
 import 'package:note_repository/services/process_service.dart';
 import 'package:note_repository/services/setting_service.dart';
 import 'package:note_repository/services/storage_service.dart';
@@ -20,12 +21,14 @@ class ServiceService extends Service {
   }
 
   static Future<void> onAppInit() async {
-    SystemService().init();
     await UIService.setDefaults();
+    SystemService().init();
+    OrientationService().init();
   }
 
   static void onAppDispose() {
     SystemService().dispose();
+    OrientationService().dispose();
   }
 
   static Future<void> onSplashScreen() async {
