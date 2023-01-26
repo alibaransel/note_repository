@@ -11,6 +11,7 @@ import 'package:note_repository/interface/common/common_text.dart';
 import 'package:note_repository/interface/customs/multiple_switch.dart';
 import 'package:note_repository/models/account.dart';
 import 'package:note_repository/models/setting.dart';
+import 'package:note_repository/models/setting_notifier.dart';
 import 'package:note_repository/services/navigation_service.dart';
 import 'package:note_repository/services/account_service.dart';
 import 'package:note_repository/services/setting_service.dart';

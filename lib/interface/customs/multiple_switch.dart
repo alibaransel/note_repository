@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:note_repository/constants/design/app_curves.dart';
 import 'package:note_repository/constants/design/app_durations.dart';
 import 'package:note_repository/constants/design/app_sizes.dart';
-import 'package:note_repository/services/setting_service.dart';
+import 'package:note_repository/models/setting_notifier.dart';
 
 class MultipleSwitch extends StatefulWidget {
   final SettingNotifier setting;
