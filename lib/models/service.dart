@@ -37,7 +37,6 @@ mixin Disposable on Service {
 mixin Stoppable on Service {
   bool _isRunning = false;
 
-  @protected
   @nonVirtual
   bool get isRunning => _isRunning;
 

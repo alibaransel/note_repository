@@ -6,39 +6,60 @@ import 'package:note_repository/models/service.dart';
 
 class IsolateService extends Service
     with Disposable, Stoppable, ValueNotifiable<IsolateMessagePair?> {
-  final String? name;
+  final int id;
 
-  IsolateService({this.name});
+  IsolateService(this.id);
 
-  final ReceivePort _receivePort = ReceivePort();
-  late final Isolate _isolate;
-  late final SendPort _sendPort;
-  late final StreamSubscription _messageStreamSubscription;
+  static const _readyCheckDuration = Duration(milliseconds: 100);
 
-  bool _isBusy = false;
+  late ReceivePort _receivePort;
+  late Isolate _isolate;
+  late SendPort _sendPort;
+  late StreamSubscription _messageStreamSubscription;
+
+  bool _isBusy = true;
 
   late dynamic _lastSendedMessage;
 
-  bool get isBusy => _isBusy; //TODO: Decide to naming (adjective and getter naming)
+  bool get isBusy => _isBusy;
+  bool get isNotBusy => !_isBusy;
 
   @override
-  Future<void> init() async {
-    if (isInitialized) return;
-    _isolate = await Isolate.spawn(_isolateLifecycle, _receivePort.sendPort, debugName: name);
-    _messageStreamSubscription = _receivePort.listen(_messageListener);
+  void init() {
     super.initNotifier(null);
     super.init();
   }
 
   @override
   void dispose() {
+    super.disposeNotifier();
+    super.dispose();
+  }
+
+  @override
+  Future<void> start() async {
+    if (isRunning) return;
+    _receivePort = ReceivePort();
+    _isolate = await Isolate.spawn(
+      _isolateLifecycle,
+      _receivePort.sendPort,
+      debugName: 'Isolate $id',
+    );
+    _messageStreamSubscription = _receivePort.listen(_messageListener);
+    await Future.doWhile(() async {
+      await Future.delayed(_readyCheckDuration);
+      return _isBusy;
+    });
+    super.start();
+  }
+
+  @override
+  void stop() {
     _isBusy = true;
     _isolate.kill(priority: Isolate.immediate);
     _receivePort.close();
     _messageStreamSubscription.cancel();
-    _isBusy = false;
-    super.disposeNotifier();
-    super.dispose();
+    super.stop();
   }
 
   void send(dynamic message) {
@@ -52,9 +73,12 @@ class IsolateService extends Service
     if (message is SendPort) {
       _sendPort = message;
     } else {
-      value = IsolateMessagePair(sended: _lastSendedMessage, received: message);
-      _isBusy = false;
+      value = IsolateMessagePair(
+        sendedMessage: _lastSendedMessage,
+        receivedMessage: message,
+      );
     }
+    _isBusy = false;
   }
 
   static void _isolateLifecycle(SendPort sendPort) async {
