@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:note_repository/models/notifiers.dart';
 
-abstract class Service {}
+abstract class Service {} //TODO: Check annotations
 
 mixin Initable on Service {
   bool _isInitialized = false;
@@ -11,9 +11,7 @@ mixin Initable on Service {
   bool get isInitialized => _isInitialized;
 
   @mustCallSuper
-  void init() {
-    _isInitialized = true;
-  }
+  void init() => _isInitialized = true;
 }
 
 mixin Disposable on Service {
@@ -24,14 +22,10 @@ mixin Disposable on Service {
   bool get isInitialized => _isInitialized;
 
   @mustCallSuper
-  void init() {
-    _isInitialized = true;
-  }
+  void init() => _isInitialized = true;
 
   @mustCallSuper
-  void dispose() {
-    _isInitialized = false;
-  }
+  void dispose() => _isInitialized = false;
 }
 
 mixin Stoppable on Service {
@@ -41,14 +35,10 @@ mixin Stoppable on Service {
   bool get isRunning => _isRunning;
 
   @mustCallSuper
-  void start() {
-    _isRunning = true;
-  }
+  void start() => _isRunning = true;
 
   @mustCallSuper
-  void stop() {
-    _isRunning = false;
-  }
+  void stop() => _isRunning = false;
 }
 
 mixin AutoStoppable on Service {
@@ -60,15 +50,11 @@ mixin AutoStoppable on Service {
 
   @protected
   @mustCallSuper
-  void start() {
-    _isRunning = true;
-  }
+  void start() => _isRunning = true;
 
   @protected
   @mustCallSuper
-  void stop() {
-    _isRunning = false;
-  }
+  void stop() => _isRunning = false;
 }
 
 mixin ChangeNotifiable on Service {
