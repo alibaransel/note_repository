@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:note_repository/constants/app_navigation_routes.dart';
 import 'package:note_repository/constants/app_paths.dart';
 import 'package:note_repository/constants/design/app_icons.dart';
 import 'package:note_repository/constants/app_keys.dart';
@@ -39,7 +40,7 @@ class HomeScreen extends StatelessWidget {
           iconSize: AppSizes.iconM,
           icon: AppIcons.settings,
           iconHeroTag: AppKeys.settingIconTag,
-          onTap: () => NavigationService().show(NavigationRoute.settings),
+          onTap: () => NavigationService().show(AppNavigationRoutes.settings),
         ),
       ],
     );

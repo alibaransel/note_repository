@@ -4,15 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:note_repository/constants/design/app_colors.dart';
 import 'package:note_repository/constants/design/app_durations.dart';
 import 'package:note_repository/constants/design/app_sizes.dart';
-import 'package:note_repository/interface/screens/camera_screen.dart';
-import 'package:note_repository/interface/screens/group_screen.dart';
-import 'package:note_repository/interface/screens/note_screen.dart';
-import 'package:note_repository/interface/views/account_view.dart';
-import 'package:note_repository/interface/screens/home_screen.dart';
-import 'package:note_repository/interface/screens/login_screen.dart';
-import 'package:note_repository/interface/screens/settings_screen.dart';
-import 'package:note_repository/interface/views/create_group_view.dart';
+import 'package:note_repository/enums/navigation_route_type.dart';
 import 'package:note_repository/models/message.dart';
+import 'package:note_repository/models/navigation_route.dart';
 import 'package:note_repository/models/service.dart';
 
 class NavigationService extends Service {
@@ -104,73 +98,4 @@ class NavigationService extends Service {
       ),
     );
   }
-}
-
-class NavigationRoute {
-  final NavigationRouteType type;
-  final Widget widget;
-
-  const NavigationRoute._({
-    required this.type,
-    required this.widget,
-  });
-
-  static const NavigationRoute login = NavigationRoute._(
-    type: NavigationRouteType.replacedScreen,
-    widget: LoginScreen(),
-  );
-
-  static const NavigationRoute home = NavigationRoute._(
-    type: NavigationRouteType.replacedScreen,
-    widget: HomeScreen(),
-  );
-
-  static const NavigationRoute settings = NavigationRoute._(
-    type: NavigationRouteType.screen,
-    widget: SettingsScreen(),
-  );
-
-  static const NavigationRoute addMedia = NavigationRoute._(
-    type: NavigationRouteType.screen,
-    widget: CameraScreen(),
-  );
-
-  static const NavigationRoute createGroup = NavigationRoute._(
-    type: NavigationRouteType.bottomSheet,
-    widget: CreateGroupView(),
-  );
-
-  static const NavigationRoute account = NavigationRoute._(
-    type: NavigationRouteType.popup,
-    widget: AccountView(),
-  );
-
-  factory NavigationRoute.group({
-    required String groupPath,
-    Color? backgroundColor,
-    PreferredSizeWidget? appBar,
-  }) {
-    return NavigationRoute._(
-      type: NavigationRouteType.screen,
-      widget: GroupScreen(
-        groupPath: groupPath,
-        backgroundColor: backgroundColor,
-        appBar: appBar,
-      ),
-    );
-  }
-
-  factory NavigationRoute.note(String notePath) {
-    return NavigationRoute._(
-      type: NavigationRouteType.screen,
-      widget: NoteScreen(notePath),
-    );
-  }
-}
-
-enum NavigationRouteType {
-  screen,
-  replacedScreen,
-  bottomSheet,
-  popup,
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:note_repository/constants/app_keys.dart';
+import 'package:note_repository/constants/app_navigation_routes.dart';
 import 'package:note_repository/constants/design/app_icons.dart';
 import 'package:note_repository/constants/design/app_sizes.dart';
 import 'package:note_repository/interface/common/common_text.dart';
@@ -22,7 +23,7 @@ class GroupCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         NavigationService().show(
-          NavigationRoute.group(
+          AppNavigationRoutes.group(
             groupPath: PathService().group(
               parentGroupPath: parentGroupPath,
               groupInfo: groupInfo,

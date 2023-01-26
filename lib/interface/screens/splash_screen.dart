@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:note_repository/constants/app_keys.dart';
+import 'package:note_repository/constants/app_navigation_routes.dart';
 import 'package:note_repository/constants/design/app_durations.dart';
 import 'package:note_repository/constants/design/app_sizes.dart';
 import 'package:note_repository/services/account_service.dart';
@@ -21,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
       ServiceService.onSplashScreen(),
     ]).then((_) {
       NavigationService().show(
-        AccountService().isLoggedIn ? NavigationRoute.home : NavigationRoute.login,
+        AccountService().isLoggedIn ? AppNavigationRoutes.home : AppNavigationRoutes.login,
       );
     });
   }

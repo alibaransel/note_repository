@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:note_repository/constants/app_keys.dart';
+import 'package:note_repository/constants/app_navigation_routes.dart';
 import 'package:note_repository/constants/configurations/app_settings.dart';
 import 'package:note_repository/constants/design/app_curves.dart';
 import 'package:note_repository/constants/design/app_durations.dart';
@@ -170,8 +171,8 @@ class _GroupScreenState extends State<GroupScreen> {
         duration: _fabAnimationDuration,
         child: _isFABVisible
             ? GestureDetector(
-                onTap: () => NavigationService().show(NavigationRoute.addMedia),
-                onLongPress: () => NavigationService().show(NavigationRoute.createGroup),
+                onTap: () => NavigationService().show(AppNavigationRoutes.addMedia),
+                onLongPress: () => NavigationService().show(AppNavigationRoutes.createGroup),
                 child: const CommonBackground(
                   child: SizedBox(
                     height: AppSizes.createButton,

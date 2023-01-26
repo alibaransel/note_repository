@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:note_repository/constants/app_exception_messages.dart';
 import 'package:note_repository/constants/app_info_messages.dart';
+import 'package:note_repository/constants/app_navigation_routes.dart';
 import 'package:note_repository/constants/design/app_colors.dart';
 import 'package:note_repository/constants/app_keys.dart';
 import 'package:note_repository/constants/design/app_durations.dart';
@@ -29,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     try {
       await AccountService().login();
-      NavigationService().show(NavigationRoute.home);
+      NavigationService().show(AppNavigationRoutes.home);
       NavigationService().showSnackBar(AppInfoMessages.loginDone);
     } catch (e) {
       NavigationService().showSnackBar(e is ExceptionMessage ? e : AppExceptionMessages.error);

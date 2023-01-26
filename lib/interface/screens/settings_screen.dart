@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:note_repository/constants/app_navigation_routes.dart';
 import 'package:note_repository/constants/design/app_colors.dart';
 import 'package:note_repository/constants/design/app_icons.dart';
 import 'package:note_repository/constants/app_keys.dart';
@@ -73,7 +74,7 @@ class _AccountCard extends StatelessWidget {
     final Account account = AccountService().account;
 
     return GestureDetector(
-      onTap: () => NavigationService().show(NavigationRoute.account),
+      onTap: () => NavigationService().show(AppNavigationRoutes.account),
       child: Container(
         height: AppSizes.xL,
         padding: const EdgeInsets.all(AppSizes.spacingM),
