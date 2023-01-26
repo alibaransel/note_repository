@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:note_repository/models/notifiers.dart';
 
-abstract class Service {} //TODO: Check annotations
+abstract class Service {}
 
 mixin Initable on Service {
   bool _isInitialized = false;
@@ -9,6 +9,10 @@ mixin Initable on Service {
   @protected
   @nonVirtual
   bool get isInitialized => _isInitialized;
+
+  @protected
+  @nonVirtual
+  bool get isNotInitialized => !_isInitialized;
 
   @mustCallSuper
   void init() => _isInitialized = true;
@@ -20,6 +24,10 @@ mixin Disposable on Service {
   @protected
   @nonVirtual
   bool get isInitialized => _isInitialized;
+
+  @protected
+  @nonVirtual
+  bool get isNotInitialized => !_isInitialized;
 
   @mustCallSuper
   void init() => _isInitialized = true;
@@ -33,6 +41,9 @@ mixin Stoppable on Service {
 
   @nonVirtual
   bool get isRunning => _isRunning;
+
+  @nonVirtual
+  bool get isNotRunning => !_isRunning;
 
   @mustCallSuper
   void start() => _isRunning = true;
@@ -49,6 +60,10 @@ mixin AutoStoppable on Service {
   bool get isRunning => _isRunning;
 
   @protected
+  @nonVirtual
+  bool get isNotRunning => !_isRunning;
+
+  @protected
   @mustCallSuper
   void start() => _isRunning = true;
 
@@ -63,6 +78,10 @@ mixin ChangeNotifiable on Service {
   @protected
   @nonVirtual
   bool get hasListeners => _changeNotifier.hasListeners;
+
+  @protected
+  @nonVirtual
+  bool get hasNoListeners => !_changeNotifier.hasListeners;
 
   @mustCallSuper
   void addListener(VoidCallback listener) => _changeNotifier.addListener(listener);
@@ -84,7 +103,11 @@ mixin ValueNotifiable<T> on Service {
 
   @protected
   @nonVirtual
-  bool get hasListener => _valueNotifier.hasListeners;
+  bool get hasListeners => _valueNotifier.hasListeners;
+
+  @protected
+  @nonVirtual
+  bool get hasNoListeners => !_valueNotifier.hasListeners;
 
   @nonVirtual
   T get value => _valueNotifier.value;
