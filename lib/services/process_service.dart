@@ -2,13 +2,12 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:note_repository/models/isolate_message_pair.dart';
 import 'package:note_repository/models/service.dart';
 import 'package:note_repository/services/isolate_service.dart';
 
 typedef ProcessFunction<T> = FutureOr<T> Function();
 
-class ProcessService extends Service with Disposable, AutoStoppable {
+class ProcessService extends Service with Initable, AutoStoppable {
   factory ProcessService() => _instance;
   static final ProcessService _instance = ProcessService._();
   ProcessService._();
@@ -16,12 +15,11 @@ class ProcessService extends Service with Disposable, AutoStoppable {
   //TODO: Implement this service to other services
   //TODO: Improve isolate spawn time
   static const int _willNotBeUsedIsolateCount = 1;
-  static const Duration _resultCheckDuration = Duration(milliseconds: 100);
   static const Duration _processQueueCheckDuration = Duration(milliseconds: 100);
   static const Duration _busyIsolateCheckDuration = Duration(milliseconds: 100);
 
   final List<ProcessFunction> _processFunctionQueue = [];
-  final Map<ProcessFunction, dynamic> _processResultsMap = {};
+  final Map<ProcessFunction, Completer<dynamic>> _processCompleterMap = {};
 
   late final int _maxIsolateCount;
   late final bool _multiIsolateSupported;
@@ -39,19 +37,10 @@ class ProcessService extends Service with Disposable, AutoStoppable {
     _multiIsolateSupported = _maxIsolateCount > 1;
     _isolateServices = List.generate(_availableIsolateCount, (i) {
       final IsolateService isolateService = IsolateService(i);
-      isolateService.init();
       return isolateService;
     });
     if (_hasAvailableIsolate) await _startIsolate(0);
     super.init();
-  }
-
-  @override
-  void dispose() {
-    for (IsolateService isolateService in _isolateServices) {
-      isolateService.dispose();
-    }
-    super.dispose();
   }
 
   @override
@@ -78,12 +67,9 @@ class ProcessService extends Service with Disposable, AutoStoppable {
     if (!_multiIsolateSupported) return await processFunction();
     _processFunctionQueue.add(processFunction);
     if (!isRunning) start();
-    await Future.doWhile(() async {
-      await Future.delayed(_resultCheckDuration);
-      return !_processResultsMap.containsKey(processFunction);
-    });
-    final result = _processResultsMap[processFunction];
-    _processResultsMap.remove(processFunction);
+    _processCompleterMap[processFunction] = Completer<dynamic>();
+    final T result = await _processCompleterMap[processFunction]!.future;
+    _processCompleterMap.remove(processFunction);
     return result;
   }
 
@@ -91,12 +77,10 @@ class ProcessService extends Service with Disposable, AutoStoppable {
     if (!_hasAvailableIsolate) return;
     _runningIsolateCount += 1;
     await _isolateServices[id].start();
-    _isolateServices[id].addListener(() => _messageListener(id)); //TODO
   }
 
   void _stopIsolate(int id) {
     _isolateServices[id].stop();
-    _isolateServices[id].removeListener(() => _messageListener(id));
     _runningIsolateCount -= 1;
   }
 
@@ -117,7 +101,11 @@ class ProcessService extends Service with Disposable, AutoStoppable {
       for (IsolateService isolateService in _isolateServices) {
         if (isolateService.isRunning && isolateService.isNotBusy) {
           if (_processFunctionQueue.isNotEmpty) {
-            _sendProcess(isolateService);
+            final ProcessFunction processFunction = _processFunctionQueue.first;
+            _processFunctionQueue.removeAt(0);
+            isolateService.runFunction<dynamic>(processFunction).then((value) {
+              _processCompleterMap[processFunction]!.complete(value);
+            });
           } else {
             _stopIsolate(isolateService.id);
           }
@@ -134,16 +122,5 @@ class ProcessService extends Service with Disposable, AutoStoppable {
       return false;
     });
     stop();
-  }
-
-  void _sendProcess(IsolateService isolateService) {
-    final ProcessFunction processFunction = _processFunctionQueue.first;
-    _processFunctionQueue.removeAt(0);
-    isolateService.send(processFunction);
-  }
-
-  void _messageListener(int isolateId) {
-    final IsolateMessagePair messageData = _isolateServices[isolateId].value!;
-    _processResultsMap[messageData.sendedMessage] = messageData.receivedMessage;
   }
 }
