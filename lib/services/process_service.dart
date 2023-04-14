@@ -9,8 +9,8 @@ typedef ProcessFunction<T> = FutureOr<T> Function();
 
 class ProcessService extends Service with Initable, AutoStoppable {
   factory ProcessService() => _instance;
-  static final ProcessService _instance = ProcessService._();
   ProcessService._();
+  static final ProcessService _instance = ProcessService._();
 
   //TODO: Implement this service to other services
   //TODO: Improve isolate spawn time
@@ -68,7 +68,7 @@ class ProcessService extends Service with Initable, AutoStoppable {
     _processFunctionQueue.add(processFunction);
     if (!isRunning) start();
     _processCompleterMap[processFunction] = Completer<dynamic>();
-    final T result = await _processCompleterMap[processFunction]!.future;
+    final T result = await _processCompleterMap[processFunction]!.future as T;
     _processCompleterMap.remove(processFunction);
     return result;
   }
@@ -95,15 +95,15 @@ class ProcessService extends Service with Initable, AutoStoppable {
             : extraNeededIsolateCount;
         final int firstIsolateId = _runningIsolateCount;
         for (int i = 0; i < extraNeededIsolateCount; i++) {
-          _startIsolate(firstIsolateId + i);
+          await _startIsolate(firstIsolateId + i);
         }
       }
-      for (IsolateService isolateService in _isolateServices) {
+      for (final IsolateService isolateService in _isolateServices) {
         if (isolateService.isRunning && isolateService.isNotBusy) {
           if (_processFunctionQueue.isNotEmpty) {
             final ProcessFunction processFunction = _processFunctionQueue.first;
             _processFunctionQueue.removeAt(0);
-            isolateService.runFunction<dynamic>(processFunction).then((value) {
+            await isolateService.runFunction<dynamic>(processFunction).then((value) {
               _processCompleterMap[processFunction]!.complete(value);
             });
           } else {
@@ -116,7 +116,7 @@ class ProcessService extends Service with Initable, AutoStoppable {
     });
     await Future.doWhile(() async {
       await Future.delayed(_busyIsolateCheckDuration);
-      for (IsolateService isolateService in _isolateServices) {
+      for (final IsolateService isolateService in _isolateServices) {
         if (isolateService.isRunning && isolateService.isBusy) return true;
       }
       return false;

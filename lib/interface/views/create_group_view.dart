@@ -28,7 +28,8 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   static const Curve _scaleAnimationCurve = AppCurves.scale;
   static const Duration _scaleAnimationDuration = AppDurations.m;
 
-  final List<dynamic> _colorList = AppIdCodeMaps.codeTypeMap[AppIdCodes.color]!.values.toList();
+  final List<Color> _colorList =
+      AppIdCodeMaps.codeTypeMap[AppIdCodes.color]!.values.toList() as List<Color>;
 
   final TextEditingController _groupNameTextController = TextEditingController();
 

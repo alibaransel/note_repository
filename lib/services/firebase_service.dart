@@ -20,7 +20,7 @@ class FirebaseService extends Service {
     if (userCredential.additionalUserInfo == null) {
       throw AppExceptionMessages.error;
     } //TODO
-    if (await _isUserNew(userCredential, user)) _createNewUserData(user);
+    if (await _isUserNew(userCredential, user)) await _createNewUserData(user);
     await _saveLoginInfo(user.uid);
     return user;
   }
@@ -74,7 +74,7 @@ class FirebaseService extends Service {
 
     if (accountData == null) throw AppExceptionMessages.error;
 
-    List<dynamic> loginHistory = accountData[AppKeys.loginHistory];
+    List<dynamic> loginHistory = accountData[AppKeys.loginHistory] as List<dynamic>;
 
     loginHistory.add(TimeService.encode(DateTime.now()));
 

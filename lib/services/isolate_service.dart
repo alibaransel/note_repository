@@ -4,9 +4,8 @@ import 'dart:isolate';
 import 'package:note_repository/models/service.dart';
 
 class IsolateService extends Service with Stoppable {
-  final int id;
-
   IsolateService(this.id);
+  final int id;
 
   late ReceivePort _receivePort;
   late Isolate _isolate;
@@ -28,7 +27,7 @@ class IsolateService extends Service with Stoppable {
       debugName: 'Isolate $id',
     );
     _messageStream = _receivePort.asBroadcastStream();
-    _sendPort = await _messageStream.first;
+    _sendPort = await _messageStream.first as SendPort;
     _isBusy = false;
     super.start();
   }
@@ -45,21 +44,21 @@ class IsolateService extends Service with Stoppable {
     if (_isBusy) throw ''; //TODO
     _isBusy = true;
     _sendPort.send(function);
-    Completer<T> completer = Completer<T>();
+    final Completer<T> completer = Completer<T>();
     final StreamSubscription subscription =
-        _messageStream.listen((message) => completer.complete(message));
+        _messageStream.listen((message) => completer.complete(message as FutureOr<T>));
     final T message = await completer.future;
     await subscription.cancel();
     _isBusy = false;
     return message;
   }
 
-  static void _isolateLifecycle(SendPort sendPort) async {
+  static Future<void> _isolateLifecycle(SendPort sendPort) async {
     final ReceivePort receivePort = ReceivePort();
 
     sendPort.send(receivePort.sendPort);
 
-    await for (dynamic message in receivePort) {
+    await for (final dynamic message in receivePort) {
       if (message is Function) {
         final result = await message.call();
         sendPort.send(result);

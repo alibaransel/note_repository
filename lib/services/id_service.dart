@@ -11,17 +11,16 @@ class IdService extends Service {
   IdService._();
 
   static String _encode(IdBlock idBlock) {
-    String id = '';
-    List<String> idCodes = [];
+    final StringBuffer id = StringBuffer();
+    final List<String> idCodes = [];
     String typeCode = '';
     String dataCode = '';
-    List<dynamic> idDataList = [
+    final List<dynamic> idDataList = [
       idBlock.itemType,
       idBlock.color,
       idBlock.noteType,
-    ];
-    idDataList.removeWhere((element) => element == null);
-    for (dynamic idData in idDataList) {
+    ]..removeWhere((element) => element == null);
+    for (final dynamic idData in idDataList) {
       AppIdCodeMaps.codeTypeMap.forEach((codeTypeMapKey, codeGroup) {
         codeGroup.forEach((key, value) {
           if (value == idData) {
@@ -32,10 +31,10 @@ class IdService extends Service {
       });
       idCodes.add(typeCode + AppIdCodes.idCodeTypeSeparator + dataCode);
     }
-    for (dynamic idData in idDataList) {
+    for (final dynamic idData in idDataList) {
       search:
-      for (String codeTypeKey in AppIdCodeMaps.codeTypeMap.keys) {
-        for (dynamic key in AppIdCodeMaps.codeTypeMap[codeTypeKey]!.keys) {
+      for (final String codeTypeKey in AppIdCodeMaps.codeTypeMap.keys) {
+        for (final String key in AppIdCodeMaps.codeTypeMap[codeTypeKey]!.keys) {
           if (idData == AppIdCodeMaps.codeTypeMap[codeTypeKey]![key]) {
             typeCode = codeTypeKey;
             dataCode = key;
@@ -44,32 +43,33 @@ class IdService extends Service {
         }
       }
     }
-    id += AppIdCodes.idStartCode;
-    for (String idCode in idCodes) {
-      id += AppIdCodes.idCodeSeparator;
-      id += idCode;
+    id.write(AppIdCodes.idStartCode);
+    for (final String idCode in idCodes) {
+      id
+        ..write(AppIdCodes.idCodeSeparator)
+        ..write(idCode);
     }
-    id += AppIdCodes.idCodeSeparator;
-    id += TimeService.encode(idBlock.dateTime);
-    id += AppIdCodes.idCodeSeparator;
-    id += idBlock.name;
-    return id;
+    id
+      ..write(AppIdCodes.idCodeSeparator)
+      ..write(TimeService.encode(idBlock.dateTime))
+      ..write(AppIdCodes.idCodeSeparator)
+      ..write(idBlock.name);
+    return id.toString();
   }
 
   static IdBlock _decode(String id) {
     String name = '';
     DateTime dateTime;
-    List<String> idBlockCodes = id.split(AppIdCodes.idCodeSeparator);
-    idBlockCodes.removeAt(0);
+    final List<String> idBlockCodes = id.split(AppIdCodes.idCodeSeparator).sublist(1);
     name = idBlockCodes.last;
     idBlockCodes.removeLast();
     dateTime = TimeService.decode(idBlockCodes.last);
     idBlockCodes.removeLast();
-    Map<String, dynamic> idBlockMap = {};
+    final Map<String, dynamic> idBlockMap = {};
     List<String> splitCode = [];
     String typeCode = '';
     String dataCode = '';
-    for (var idBlockCode in idBlockCodes) {
+    for (final idBlockCode in idBlockCodes) {
       splitCode = idBlockCode.split(AppIdCodes.idCodeTypeSeparator);
       typeCode = splitCode[0];
       dataCode = splitCode[1];
@@ -78,9 +78,9 @@ class IdService extends Service {
     return IdBlock(
       name: name,
       dateTime: dateTime,
-      itemType: idBlockMap[AppIdCodes.item],
-      color: idBlockMap[AppIdCodes.color],
-      noteType: idBlockMap[AppIdCodes.noteType],
+      itemType: idBlockMap[AppIdCodes.item] as Type,
+      color: idBlockMap[AppIdCodes.color] as Color?,
+      noteType: idBlockMap[AppIdCodes.noteType] as NoteType?,
     );
   }
 
@@ -96,7 +96,7 @@ class IdService extends Service {
   }
 
   static GroupInfo decodeGroupInfo(String id) {
-    IdBlock idBlock = _decode(id);
+    final IdBlock idBlock = _decode(id);
     return GroupInfo(
       name: idBlock.name,
       dateTime: idBlock.dateTime,
@@ -116,7 +116,7 @@ class IdService extends Service {
   }
 
   static NoteInfo decodeNoteInfo(String id) {
-    IdBlock idBlock = _decode(id);
+    final IdBlock idBlock = _decode(id);
     return NoteInfo(
       name: idBlock.name,
       dateTime: idBlock.dateTime,

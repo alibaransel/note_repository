@@ -16,8 +16,10 @@ class ItemService with ChangeNotifier {
 
   late Group _group;
 
-  Future<void> addListenerAndSetup(
-      {required VoidCallback listener, required String groupPath}) async {
+  Future<void> addListenerAndSetup({
+    required VoidCallback listener,
+    required String groupPath,
+  }) async {
     addListener(listener);
     _itemPathServiceMap[groupPath] = this;
     _group = await const _GroupService._().getGroup(groupPath);
@@ -31,8 +33,8 @@ class ItemService with ChangeNotifier {
 
   Group get group => _group;
 
-  bool _isNameExist({required String name, required List<dynamic> ids}) {
-    for (dynamic id in ids) {
+  bool _isNameExist({required String name, required List<String> ids}) {
+    for (final String id in ids) {
       if (id.endsWith(AppIdCodes.idCodeSeparator + name)) return true;
     }
     return false;
@@ -141,19 +143,21 @@ class _GroupService {
     List<GroupInfo> groupInfos = [];
     final Map<String, dynamic> groupIdsData =
         await StorageService.file.getData(PathService().groupGroupIds(groupPath));
-    final List<dynamic> groupIds = groupIdsData[AppKeys.data] ?? [];
-    for (String groupId in groupIds) {
-      groupInfos.add(IdService.decodeGroupInfo(groupId));
+    final List<dynamic> groupIds = groupIdsData[AppKeys.data] as List<dynamic>? ?? [];
+    for (final dynamic groupId in groupIds) {
+      groupInfos.add(IdService.decodeGroupInfo(groupId as String));
     }
     return groupInfos;
   }
 
-  Future<String> tryCreate(
-      {required GroupInfo newGroupInfo, required String parentGroupPath}) async {
+  Future<String> tryCreate({
+    required GroupInfo newGroupInfo,
+    required String parentGroupPath,
+  }) async {
     try {
       final Map<String, dynamic> groupIdsData =
           await StorageService.file.getData(PathService().groupGroupIds(parentGroupPath));
-      List<dynamic> groupIds = groupIdsData[AppKeys.data] ?? [];
+      List<String> groupIds = groupIdsData[AppKeys.data] as List<String>? ?? [];
       if (ItemService()._isNameExist(name: newGroupInfo.name, ids: groupIds)) {
         return AppKeys.nameExist;
       }
@@ -201,7 +205,7 @@ class _GroupService {
     final String parentGroupGroupIdsPath = PathService().groupGroupIds(parentGroupPath);
     final Map<String, dynamic> parentGroupGroupIdsData =
         await StorageService.file.getData(parentGroupGroupIdsPath);
-    List<dynamic> parentGroupGroupIds = parentGroupGroupIdsData[AppKeys.data];
+    List<dynamic> parentGroupGroupIds = parentGroupGroupIdsData[AppKeys.data] as List<dynamic>;
     parentGroupGroupIds.remove(groupId);
     await StorageService.file.setData(
       path: parentGroupGroupIdsPath,
@@ -219,12 +223,12 @@ class _NoteService {
   const _NoteService._();
 
   Future<List<NoteInfo>> getNoteInfos(String groupPath) async {
-    List<NoteInfo> noteInfos = [];
+    final List<NoteInfo> noteInfos = [];
     final Map<String, dynamic> noteIdsData =
         await StorageService.file.getData(PathService().groupNoteIds(groupPath));
-    final List<dynamic> noteIds = noteIdsData[AppKeys.data] ?? [];
-    for (String noteId in noteIds) {
-      noteInfos.add(IdService.decodeNoteInfo(noteId));
+    final List<dynamic> noteIds = noteIdsData[AppKeys.data] as List<dynamic>? ?? [];
+    for (final dynamic noteId in noteIds) {
+      noteInfos.add(IdService.decodeNoteInfo(noteId as String));
     }
     return noteInfos;
   }
@@ -270,7 +274,7 @@ class _NoteService {
       final String id = IdService.encodeNoteInfo(noteInfo);
       final Map<String, dynamic> noteIdsData =
           await StorageService.file.getData(PathService().groupNoteIds(groupPath));
-      List<dynamic> noteIds = noteIdsData[AppKeys.data] ?? [];
+      final List<String> noteIds = noteIdsData[AppKeys.data] as List<String>? ?? [];
       if (ItemService()._isNameExist(name: noteInfo.name, ids: noteIds)) return AppKeys.nameExist;
       noteIds.add(id);
       await StorageService.file.setData(
@@ -317,7 +321,7 @@ class _NoteService {
     final String groupNoteIdsPath = PathService().groupNoteIds(PathService().groupOfNote(notePath));
     final Map<String, dynamic> groupNoteIdsData =
         await StorageService.file.getData(groupNoteIdsPath);
-    List<dynamic> groupNoteIds = groupNoteIdsData[AppKeys.data];
+    final List<dynamic> groupNoteIds = groupNoteIdsData[AppKeys.data] as List<dynamic>;
     groupNoteIds.remove(id);
     await StorageService.file.setData(
       path: groupNoteIdsPath,

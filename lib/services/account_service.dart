@@ -9,9 +9,9 @@ import 'package:note_repository/services/setting_service.dart';
 import 'package:note_repository/services/storage_service.dart';
 
 class AccountService extends Service with Initable {
+  AccountService._();
   factory AccountService() => _instance;
   static final AccountService _instance = AccountService._();
-  AccountService._();
 
   late Account _account;
 
@@ -67,11 +67,11 @@ class AccountService extends Service with Initable {
     final Map<String, dynamic> accountData = await StorageService.file.getData(AppPaths.account);
     await set(
       Account(
-        uid: accountData[AppKeys.uid]!,
-        name: accountData[AppKeys.name]!,
-        email: accountData[AppKeys.email]!,
+        uid: accountData[AppKeys.uid]! as String,
+        name: accountData[AppKeys.name]! as String,
+        email: accountData[AppKeys.email]! as String,
         image: await StorageService.file.getImage(AppPaths.userImage),
-        loginType: accountData[AppKeys.loginType]!,
+        loginType: accountData[AppKeys.loginType]! as String,
       ),
     );
   }

@@ -12,8 +12,8 @@ import 'package:note_repository/services/path_service.dart';
 
 class StorageService extends Service with Initable {
   factory StorageService() => _instance;
-  static final _instance = StorageService._();
   StorageService._();
+  static final _instance = StorageService._();
 
   static const directory = _DirectoryService();
   static const file = _FileService();
@@ -29,7 +29,7 @@ class StorageService extends Service with Initable {
   }
 
   Future<void> _createDefaults() async {
-    for (String directoryPath in AppDefaults.directoryPaths) {
+    for (final String directoryPath in AppDefaults.directoryPaths) {
       await const _DirectoryService().create(directoryPath);
     }
     AppDefaults.filePathsAndData.forEach((path, data) async {
@@ -42,8 +42,8 @@ class _DirectoryService {
   const _DirectoryService();
 
   Directory get(String path) {
-    path = PathService().fullPath(path);
-    return Directory(path);
+    final String fullPath = PathService().fullPath(path);
+    return Directory(fullPath);
   }
 
   Future<void> create(String path) async {
@@ -61,8 +61,8 @@ class _FileService {
   const _FileService();
 
   File get(String path) {
-    path = PathService().fullPath(path);
-    return File(path);
+    final String fullPath = PathService().fullPath(path);
+    return File(fullPath);
   }
 
   Future<void> setData({required String path, required Map<String, dynamic> data}) async {
@@ -79,13 +79,13 @@ class _FileService {
   }
 
   Future<void> emptyData(String path) async {
-    setData(path: path, data: {});
+    await setData(path: path, data: {});
   }
 
   Future<Map<String, dynamic>> getData(String path) async {
     final File file = get(path);
     final String jsonString = await file.readAsString();
-    return Map<String, dynamic>.from(jsonDecode(jsonString));
+    return Map<String, dynamic>.from(jsonDecode(jsonString) as Map);
   }
 
   Future<void> saveImage({required String path, required Uint8List dataBites}) async {

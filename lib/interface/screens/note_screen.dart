@@ -13,20 +13,20 @@ import 'package:note_repository/interface/common/common_loading_indicator.dart';
 import 'package:note_repository/interface/common/common_text.dart';
 import 'package:note_repository/models/note.dart';
 import 'package:note_repository/services/id_service.dart';
+import 'package:note_repository/services/item_service.dart';
 import 'package:note_repository/services/navigation_service.dart';
 import 'package:note_repository/services/path_service.dart';
-import 'package:note_repository/services/item_service.dart';
-import 'package:note_repository/services/ui_service.dart';
 import 'package:note_repository/services/time_service.dart';
+import 'package:note_repository/services/ui_service.dart';
 import 'package:video_player/video_player.dart';
 
 class NoteScreen extends StatefulWidget {
-  final String notePath;
-
   const NoteScreen(
     this.notePath, {
     super.key,
   });
+
+  final String notePath;
 
   @override
   State<NoteScreen> createState() => _NoteScreenState();
@@ -86,7 +86,7 @@ class _NoteScreenState extends State<NoteScreen> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     switch (state) {
       case AppLifecycleState.paused:
         if (_isPlaying) await _videoPlayerController.pause();
@@ -100,8 +100,9 @@ class _NoteScreenState extends State<NoteScreen> with WidgetsBindingObserver {
     UIService.restoreOverlays();
     WidgetsBinding.instance.removeObserver(this);
     if (_note.info.type == NoteType.video) {
-      _videoPlayerController.removeListener(_videoPlayerListener);
-      _videoPlayerController.dispose();
+      _videoPlayerController
+        ..removeListener(_videoPlayerListener)
+        ..dispose();
     }
     super.dispose();
   }
@@ -309,7 +310,7 @@ class _NoteScreenState extends State<NoteScreen> with WidgetsBindingObserver {
                                 offset: Offset(
                                   () {
                                     int maxDuration = 0;
-                                    for (DurationRange durationRange
+                                    for (final DurationRange durationRange
                                         in _videoPlayerController.value.buffered) {
                                       final int end = durationRange.end.inMilliseconds;
                                       if (end > maxDuration) {
