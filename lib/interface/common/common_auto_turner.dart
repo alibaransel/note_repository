@@ -5,12 +5,11 @@ import 'package:note_repository/constants/design/app_durations.dart';
 import 'package:note_repository/services/orientation_service.dart';
 
 class CommonAutoTurner extends StatefulWidget {
-  final Widget child;
-
   const CommonAutoTurner({
-    super.key,
     required this.child,
+    super.key,
   });
+  final Widget child;
 
   @override
   State<CommonAutoTurner> createState() => _CommonAutoTurnerState();

@@ -4,14 +4,13 @@ import 'package:note_repository/constants/design/app_icons.dart';
 import 'package:note_repository/constants/design/app_sizes.dart';
 
 class CommonInfoBody extends StatelessWidget {
-  //TODO: Remove Common Info Body
-  final IconData icon;
-  final String text;
-
   const CommonInfoBody._({
     required this.icon,
     required this.text,
   });
+  //TODO: Remove Common Info Body
+  final IconData icon;
+  final String text;
 
   static const CommonInfoBody error = CommonInfoBody._(
     icon: AppIcons.error,

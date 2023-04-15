@@ -3,8 +3,8 @@ import 'package:note_repository/models/service.dart';
 
 class SystemService extends Service with Disposable, WidgetsBindingObserver {
   factory SystemService() => _instance;
-  static final _instance = SystemService._();
   SystemService._();
+  static final _instance = SystemService._();
 
   final appState = ValueNotifier<AppLifecycleState?>(null);
 

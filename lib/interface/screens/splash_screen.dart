@@ -18,7 +18,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   void _prepareAppInMinTime() {
     Future.wait([
-      Future.delayed(AppDurations.splashMin),
+      Future<void>.delayed(AppDurations.splashMin),
       ServiceService.onSplashScreen(),
     ]).then((_) {
       NavigationService().show(

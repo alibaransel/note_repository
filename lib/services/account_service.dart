@@ -9,8 +9,8 @@ import 'package:note_repository/services/setting_service.dart';
 import 'package:note_repository/services/storage_service.dart';
 
 class AccountService extends Service with Initable {
-  AccountService._();
   factory AccountService() => _instance;
+  AccountService._();
   static final AccountService _instance = AccountService._();
 
   late Account _account;

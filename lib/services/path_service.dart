@@ -9,8 +9,8 @@ import 'package:path_provider/path_provider.dart';
 
 class PathService extends Service with Initable {
   factory PathService() => _instance;
-  static final PathService _instance = PathService._();
   PathService._();
+  static final PathService _instance = PathService._();
 
   late final String _corePath;
 

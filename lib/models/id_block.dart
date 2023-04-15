@@ -2,12 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:note_repository/models/note.dart';
 
 class IdBlock {
-  Type itemType;
-  String name;
-  DateTime dateTime;
-  Color? color;
-  NoteType? noteType;
-
   IdBlock({
     required this.itemType,
     required this.name,
@@ -15,4 +9,9 @@ class IdBlock {
     this.color,
     this.noteType,
   });
+  Type itemType;
+  String name;
+  DateTime dateTime;
+  Color? color;
+  NoteType? noteType;
 }

@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:note_repository/constants/app_exception_messages.dart';
 import 'package:note_repository/constants/app_info_messages.dart';
-import 'package:note_repository/constants/app_navigation_routes.dart';
-import 'package:note_repository/constants/design/app_colors.dart';
 import 'package:note_repository/constants/app_keys.dart';
+import 'package:note_repository/constants/app_navigation_routes.dart';
+import 'package:note_repository/constants/app_strings.dart';
+import 'package:note_repository/constants/design/app_colors.dart';
 import 'package:note_repository/constants/design/app_durations.dart';
 import 'package:note_repository/constants/design/app_icons.dart';
 import 'package:note_repository/constants/design/app_sizes.dart';
-import 'package:note_repository/constants/app_strings.dart';
 import 'package:note_repository/interface/common/common_loading_indicator.dart';
 import 'package:note_repository/models/message.dart';
-import 'package:note_repository/services/navigation_service.dart';
 import 'package:note_repository/services/account_service.dart';
+import 'package:note_repository/services/navigation_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -24,7 +24,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool _buttonStatus = true;
 
-  void _googleButtonOnClick() async {
+  Future<void> _googleButtonOnClick() async {
     setState(() {
       _buttonStatus = false;
     });

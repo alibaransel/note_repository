@@ -3,9 +3,8 @@ import 'package:note_repository/constants/design/app_colors.dart';
 import 'package:note_repository/constants/design/app_icons.dart';
 
 abstract class Message {
-  final String text;
-
   const Message([this.text = '']);
+  final String text;
 }
 
 class InfoMessage extends Message {

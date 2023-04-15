@@ -8,14 +8,14 @@ void main() {
     'Process Service test',
     () async {
       await ProcessService().init();
-      List<int> nList = List.generate(40, (i) => Random().nextInt(10) + 35);
-      Stopwatch stopwatch = Stopwatch();
-      stopwatch.start();
+      final List<int> nList = List.generate(40, (i) => Random().nextInt(10) + 35);
+      final Stopwatch stopwatch = Stopwatch()..start();
       final dynamic result1 = singleIsolateDecode(nList);
       stopwatch.stop();
       final Duration singleIsolateDuration = stopwatch.elapsed;
-      stopwatch.reset();
-      stopwatch.start();
+      stopwatch
+        ..reset()
+        ..start();
       final dynamic result2 = await multiIsolateDecode(nList);
       stopwatch.stop();
       final Duration multiIsolateDuration = stopwatch.elapsed;
@@ -28,7 +28,7 @@ void main() {
 int singleIsolateDecode(List<int> nList) {
   int result = 0;
 
-  for (int n in nList) {
+  for (final int n in nList) {
     result += slowFib(n);
   }
 

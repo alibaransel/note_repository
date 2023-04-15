@@ -10,14 +10,13 @@ import 'package:note_repository/services/navigation_service.dart';
 import 'package:note_repository/services/path_service.dart';
 
 class NoteCard extends StatelessWidget {
-  final NoteInfo noteInfo;
-  final String groupPath;
-
   const NoteCard({
-    super.key,
     required this.noteInfo,
     required this.groupPath,
+    super.key,
   });
+  final NoteInfo noteInfo;
+  final String groupPath;
 
   @override
   Widget build(BuildContext context) {

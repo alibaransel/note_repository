@@ -9,14 +9,13 @@ import 'package:note_repository/services/navigation_service.dart';
 import 'package:note_repository/services/path_service.dart';
 
 class GroupCard extends StatelessWidget {
-  final GroupInfo groupInfo;
-  final String parentGroupPath;
-
   const GroupCard({
-    super.key,
     required this.groupInfo,
     required this.parentGroupPath,
+    super.key,
   });
+  final GroupInfo groupInfo;
+  final String parentGroupPath;
 
   @override
   Widget build(BuildContext context) {

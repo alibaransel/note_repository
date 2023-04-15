@@ -8,8 +8,8 @@ import 'package:note_repository/models/setting_notifier.dart';
 import 'package:note_repository/services/storage_service.dart';
 
 class SettingService extends Service with Initable {
-  SettingService._();
   factory SettingService() => _instance;
+  SettingService._();
   static final SettingService _instance = SettingService._();
 
   late final SettingNotifier<ThemeMode> _themeModeNotifier;

@@ -14,7 +14,7 @@ class FirebaseService extends Service {
 
   static Future<User> loginWithGoogle() async {
     if (!await NetworkService.hasInternet()) throw AppExceptionMessages.noInternet;
-    UserCredential userCredential = await _loginWithGoogle();
+    final UserCredential userCredential = await _loginWithGoogle();
     if (userCredential.user == null) throw AppExceptionMessages.error;
     final User user = userCredential.user!;
     if (userCredential.additionalUserInfo == null) {
@@ -37,7 +37,8 @@ class FirebaseService extends Service {
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken,
     );
-    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+    final UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
     return userCredential;
   }
 
@@ -63,20 +64,19 @@ class FirebaseService extends Service {
   }
 
   static Future<void> _saveLoginInfo(String uid) async {
-    DocumentSnapshot<Map<String, dynamic>> accountSnapshot = await FirebaseFirestore.instance
+    final DocumentSnapshot<Map<String, dynamic>> accountSnapshot = await FirebaseFirestore.instance
         .collection(AppKeys.users)
         .doc(uid)
         .collection(AppKeys.user)
         .doc(AppKeys.account)
         .get();
 
-    Map<String, dynamic>? accountData = accountSnapshot.data();
+    final Map<String, dynamic>? accountData = accountSnapshot.data();
 
     if (accountData == null) throw AppExceptionMessages.error;
 
-    List<dynamic> loginHistory = accountData[AppKeys.loginHistory] as List<dynamic>;
-
-    loginHistory.add(TimeService.encode(DateTime.now()));
+    final List<dynamic> loginHistory = (accountData[AppKeys.loginHistory] as List<dynamic>)
+      ..add(TimeService.encode(DateTime.now()));
 
     await FirebaseFirestore.instance
         .collection(AppKeys.users)

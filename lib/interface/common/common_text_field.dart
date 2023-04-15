@@ -3,13 +3,6 @@ import 'package:note_repository/constants/design/app_colors.dart';
 import 'package:note_repository/constants/design/app_sizes.dart';
 
 class CommonTextField extends StatelessWidget {
-  final bool autoFocus;
-  final bool centerText;
-  final String? hintText;
-  final TextEditingController? controller;
-  final void Function(String text)? onChanged;
-  final void Function()? onEditingComplete;
-
   const CommonTextField({
     super.key,
     this.autoFocus = false,
@@ -19,6 +12,12 @@ class CommonTextField extends StatelessWidget {
     this.onChanged,
     this.onEditingComplete,
   });
+  final bool autoFocus;
+  final bool centerText;
+  final String? hintText;
+  final TextEditingController? controller;
+  final void Function(String text)? onChanged;
+  final void Function()? onEditingComplete;
 
   @override
   Widget build(BuildContext context) {

@@ -4,12 +4,11 @@ import 'package:note_repository/constants/design/app_durations.dart';
 import 'package:note_repository/constants/design/app_sizes.dart';
 
 class CommonLoadingIndicator extends StatefulWidget {
-  final double? size;
-
   const CommonLoadingIndicator({
     this.size,
     super.key,
   });
+  final double? size;
 
   @override
   State<CommonLoadingIndicator> createState() => _CommonLoadingIndicatorState();
@@ -21,7 +20,7 @@ class _CommonLoadingIndicatorState extends State<CommonLoadingIndicator> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(AppDurations.loadingIndicatorWait).then((_) {
+    Future<void>.delayed(AppDurations.loadingIndicatorWait).then((_) {
       if (!mounted) return;
       setState(() {
         isWaiting = false;

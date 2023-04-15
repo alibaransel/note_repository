@@ -114,7 +114,7 @@ class ItemService with ChangeNotifier {
       ...allowedAudioExtensions
     ];
 
-    FilePickerResult? filePickerResult = await FilePicker.platform.pickFiles(
+    final FilePickerResult? filePickerResult = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: allowedExtensions,
     );
@@ -129,8 +129,8 @@ class ItemService with ChangeNotifier {
     } else if (allowedAudioExtensions.contains(pickedFileExtension)) {
       noteType = NoteType.audio;
     }
-    if (noteType == null) throw ''; //TODO
-    String result = await tryCreateNote(type: noteType, realMediaPath: pickedFilePath);
+    if (noteType == null) throw Exception(''); //TODO
+    final String result = await tryCreateNote(type: noteType, realMediaPath: pickedFilePath);
     await FilePicker.platform.clearTemporaryFiles();
     return result;
   }
@@ -140,7 +140,7 @@ class _GroupService {
   const _GroupService._();
 
   Future<List<GroupInfo>> getSubGroupInfos(String groupPath) async {
-    List<GroupInfo> groupInfos = [];
+    final List<GroupInfo> groupInfos = [];
     final Map<String, dynamic> groupIdsData =
         await StorageService.file.getData(PathService().groupGroupIds(groupPath));
     final List<dynamic> groupIds = groupIdsData[AppKeys.data] as List<dynamic>? ?? [];
@@ -157,7 +157,7 @@ class _GroupService {
     try {
       final Map<String, dynamic> groupIdsData =
           await StorageService.file.getData(PathService().groupGroupIds(parentGroupPath));
-      List<String> groupIds = groupIdsData[AppKeys.data] as List<String>? ?? [];
+      final List<String> groupIds = groupIdsData[AppKeys.data] as List<String>? ?? [];
       if (ItemService()._isNameExist(name: newGroupInfo.name, ids: groupIds)) {
         return AppKeys.nameExist;
       }
@@ -176,11 +176,11 @@ class _GroupService {
       await StorageService.file.setData(
         //TODO: Separate create and set(or update) methods for prevent confusion and improve readability of code
         path: PathService().groupGroupIds(newGroupPath),
-        data: {AppKeys.data: []},
+        data: {AppKeys.data: <dynamic>[]},
       );
       await StorageService.file.setData(
         path: PathService().groupNoteIds(newGroupPath),
-        data: {AppKeys.data: []},
+        data: {AppKeys.data: <dynamic>[]},
       );
       await StorageService.directory.create(PathService().groupGroups(newGroupPath));
       await StorageService.directory.create(PathService().groupNotes(newGroupPath));
@@ -205,8 +205,8 @@ class _GroupService {
     final String parentGroupGroupIdsPath = PathService().groupGroupIds(parentGroupPath);
     final Map<String, dynamic> parentGroupGroupIdsData =
         await StorageService.file.getData(parentGroupGroupIdsPath);
-    List<dynamic> parentGroupGroupIds = parentGroupGroupIdsData[AppKeys.data] as List<dynamic>;
-    parentGroupGroupIds.remove(groupId);
+    final List<dynamic> parentGroupGroupIds = parentGroupGroupIdsData[AppKeys.data] as List<dynamic>
+      ..remove(groupId);
     await StorageService.file.setData(
       path: parentGroupGroupIdsPath,
       data: {AppKeys.data: parentGroupGroupIds},
@@ -236,7 +236,7 @@ class _NoteService {
   Future<NoteInfo> tryCreateNoteInfo({required String groupPath, required NoteType type}) async {
     //TODO: Improve naming
     final List<NoteInfo> groupNoteInfos = await getNoteInfos(groupPath);
-    List<int> noteNumbers =
+    final List<int> noteNumbers =
         groupNoteInfos.map((groupNoteInfo) => int.parse(groupNoteInfo.name.split('_')[1])).toList();
     int newNoteNumber = 0;
     if (noteNumbers.isEmpty) {
@@ -321,8 +321,7 @@ class _NoteService {
     final String groupNoteIdsPath = PathService().groupNoteIds(PathService().groupOfNote(notePath));
     final Map<String, dynamic> groupNoteIdsData =
         await StorageService.file.getData(groupNoteIdsPath);
-    final List<dynamic> groupNoteIds = groupNoteIdsData[AppKeys.data] as List<dynamic>;
-    groupNoteIds.remove(id);
+    final List<dynamic> groupNoteIds = groupNoteIdsData[AppKeys.data] as List<dynamic>..remove(id);
     await StorageService.file.setData(
       path: groupNoteIdsPath,
       data: {

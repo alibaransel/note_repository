@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:note_repository/constants/app_info_messages.dart';
-import 'package:note_repository/constants/app_navigation_routes.dart';
-import 'package:note_repository/constants/design/app_colors.dart';
 import 'package:note_repository/constants/app_key_maps.dart';
-import 'package:note_repository/constants/design/app_sizes.dart';
+import 'package:note_repository/constants/app_navigation_routes.dart';
 import 'package:note_repository/constants/app_strings.dart';
+import 'package:note_repository/constants/design/app_colors.dart';
+import 'package:note_repository/constants/design/app_sizes.dart';
 import 'package:note_repository/models/account.dart';
-import 'package:note_repository/services/navigation_service.dart';
 import 'package:note_repository/services/account_service.dart';
+import 'package:note_repository/services/navigation_service.dart';
 
 class AccountView extends StatelessWidget {
   const AccountView({super.key});

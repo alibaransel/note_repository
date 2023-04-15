@@ -5,6 +5,21 @@ import 'package:note_repository/interface/common/common_background.dart';
 import 'package:note_repository/interface/common/common_text.dart';
 
 class CommonIconButton extends StatelessWidget {
+  const CommonIconButton({
+    required this.size,
+    required this.iconSize,
+    required this.icon,
+    super.key,
+    this.square = false,
+    this.autoTurn = false,
+    this.commonBackground = false,
+    this.foregroundColor,
+    this.backgroundColor,
+    this.iconHeroTag = '',
+    this.text,
+    this.onTap,
+    this.onLongPress,
+  });
   final double size;
   final double iconSize;
   final bool square;
@@ -18,27 +33,11 @@ class CommonIconButton extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
 
-  const CommonIconButton({
-    super.key,
-    required this.size,
-    required this.iconSize,
-    this.square = false,
-    this.autoTurn = false,
-    this.commonBackground = false,
-    this.foregroundColor,
-    this.backgroundColor,
-    required this.icon,
-    this.iconHeroTag = '',
-    this.text,
-    this.onTap,
-    this.onLongPress,
-  });
-
   //TODO: Add tap feedbacks (animations, sounds and vibrations)
 
   @override
   Widget build(BuildContext context) {
-    final bool hasText = (text != null);
+    final bool hasText = text != null;
 
     Widget button = GestureDetector(
       onTap: onTap,
@@ -60,7 +59,10 @@ class CommonIconButton extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            iconHeroTag.isNotEmpty ? Hero(tag: iconHeroTag, child: _buildIcon()) : _buildIcon(),
+            if (iconHeroTag.isNotEmpty)
+              Hero(tag: iconHeroTag, child: _buildIcon())
+            else
+              _buildIcon(),
             if (hasText) ...[
               const SizedBox(width: AppSizes.spacingS),
               CommonText(

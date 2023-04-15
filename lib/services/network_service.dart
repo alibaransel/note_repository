@@ -15,7 +15,7 @@ class NetworkService extends Service {
     try {
       bool internetStatus = false;
       List<InternetAddress> result = [];
-      for (String checkURL in _checkURLs) {
+      for (final String checkURL in _checkURLs) {
         result = await InternetAddress.lookup(checkURL);
         if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
           internetStatus = true;
@@ -29,7 +29,7 @@ class NetworkService extends Service {
   }
 
   static Future<void> saveImageFromURL({required String path, required String imageURL}) async {
-    Response response = await get(Uri.parse(imageURL));
+    final Response response = await get(Uri.parse(imageURL));
     await StorageService.file.saveImage(
       path: path,
       dataBites: response.bodyBytes,

@@ -4,12 +4,11 @@ import 'package:note_repository/models/setting.dart';
 import 'package:note_repository/services/storage_service.dart';
 
 class SettingNotifier<T extends Enum> extends SafeValueNotifier<T> {
-  final Setting<T> setting;
-
   SettingNotifier({
     required this.setting,
     required T firstValue,
   }) : super(firstValue);
+  final Setting<T> setting;
 
   @override
   set value(T newValue) {

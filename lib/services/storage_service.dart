@@ -23,7 +23,7 @@ class StorageService extends Service with Initable {
     if (isInitialized) return;
     await PathService().init();
     final File file = const _FileService().get(AppPaths.config);
-    final bool exists = await file.exists();
+    final bool exists = file.existsSync();
     if (!exists) await _createDefaults();
     super.init();
   }

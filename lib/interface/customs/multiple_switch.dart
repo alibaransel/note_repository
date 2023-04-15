@@ -5,9 +5,8 @@ import 'package:note_repository/constants/design/app_sizes.dart';
 import 'package:note_repository/models/setting_notifier.dart';
 
 class MultipleSwitch extends StatefulWidget {
-  final SettingNotifier setting;
-
   const MultipleSwitch(this.setting, {super.key});
+  final SettingNotifier setting;
 
   @override
   State<MultipleSwitch> createState() => _MultipleSwitchState();
@@ -17,6 +16,7 @@ class _MultipleSwitchState extends State<MultipleSwitch> {
   static const double _edgeLength = AppSizes.m;
   static const double _thickness = AppSizes.borderWidthS;
   static const double _iconSize = AppSizes.iconM;
+  static const double selectorEdgeLength = (_edgeLength + _iconSize) / 2;
 
   static const Curve _curve = AppCurves.slide;
   static const Duration _slideAnimationDuration = AppDurations.m;
@@ -46,7 +46,6 @@ class _MultipleSwitchState extends State<MultipleSwitch> {
 
   @override
   Widget build(BuildContext context) {
-    double selectorEdgeLength = (_edgeLength + _iconSize) / 2;
     return Stack(
       children: [
         _buildSwitchBox(),

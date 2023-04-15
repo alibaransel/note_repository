@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
 class CommonText extends StatelessWidget {
-  final String data;
-  final TextStyle? style;
-
   const CommonText(
     this.data, {
     this.style,
     super.key,
   });
+  final String data;
+  final TextStyle? style;
 
   @override
   Widget build(BuildContext context) {

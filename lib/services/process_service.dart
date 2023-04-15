@@ -18,8 +18,8 @@ class ProcessService extends Service with Initable, AutoStoppable {
   static const Duration _processQueueCheckDuration = Duration(milliseconds: 100);
   static const Duration _busyIsolateCheckDuration = Duration(milliseconds: 100);
 
-  final List<ProcessFunction> _processFunctionQueue = [];
-  final Map<ProcessFunction, Completer<dynamic>> _processCompleterMap = {};
+  final List<ProcessFunction<dynamic>> _processFunctionQueue = [];
+  final Map<ProcessFunction<dynamic>, Completer<dynamic>> _processCompleterMap = {};
 
   late final int _maxIsolateCount;
   late final bool _multiIsolateSupported;
@@ -101,7 +101,7 @@ class ProcessService extends Service with Initable, AutoStoppable {
       for (final IsolateService isolateService in _isolateServices) {
         if (isolateService.isRunning && isolateService.isNotBusy) {
           if (_processFunctionQueue.isNotEmpty) {
-            final ProcessFunction processFunction = _processFunctionQueue.first;
+            final ProcessFunction<dynamic> processFunction = _processFunctionQueue.first;
             _processFunctionQueue.removeAt(0);
             await isolateService.runFunction<dynamic>(processFunction).then((value) {
               _processCompleterMap[processFunction]!.complete(value);
@@ -111,11 +111,11 @@ class ProcessService extends Service with Initable, AutoStoppable {
           }
         }
       }
-      await Future.delayed(_processQueueCheckDuration);
+      await Future<void>.delayed(_processQueueCheckDuration);
       return _processFunctionQueue.isNotEmpty;
     });
     await Future.doWhile(() async {
-      await Future.delayed(_busyIsolateCheckDuration);
+      await Future<void>.delayed(_busyIsolateCheckDuration);
       for (final IsolateService isolateService in _isolateServices) {
         if (isolateService.isRunning && isolateService.isBusy) return true;
       }

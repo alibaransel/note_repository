@@ -17,8 +17,8 @@ import 'package:note_repository/interface/common/common_loading_indicator.dart';
 import 'package:note_repository/models/message.dart';
 import 'package:note_repository/models/note.dart';
 import 'package:note_repository/services/camera_service.dart';
-import 'package:note_repository/services/navigation_service.dart';
 import 'package:note_repository/services/item_service.dart';
+import 'package:note_repository/services/navigation_service.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -45,7 +45,7 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
   static const Duration _shutterButtonsScaleAnimationDuration = AppDurations.m;
 
   CameraStatus _status = CameraService().status.value;
-  CameraSetting? _cameraSetting;
+  CameraSetting<dynamic>? _cameraSetting;
   bool _isVideoMode = false; //TODO: Improve this
 
   late int _cameraIndex;
@@ -92,12 +92,12 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
     NavigationService().showSnackBar(InfoMessage(result));
   }
 
-  Future<void> _changeCameraSettingBox(CameraSetting newCameraSetting) async {
+  Future<void> _changeCameraSettingBox(CameraSetting<dynamic> newCameraSetting) async {
     setState(() {
       _cameraSetting = null;
     });
     if (_cameraSetting != newCameraSetting) {
-      await Future.delayed(_cameraSettingBoxChangeDuration);
+      await Future<void>.delayed(_cameraSettingBoxChangeDuration);
       setState(() {
         _cameraSetting = newCameraSetting;
       });
@@ -516,7 +516,7 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
           .singleWhere((settingOption) => settingOption.data == _flashMode)
           .icon,
       onTap: () async {
-        _changeCameraSettingBox(CameraSetting.flashMode);
+        await _changeCameraSettingBox(CameraSetting.flashMode);
       },
     );
   }
@@ -541,13 +541,12 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
 
 //TODO: Use Setting class
 class CameraSetting<DataType> {
-  final Future<void> Function(DataType data) changeFunction;
-  final List<CameraSettingOption<DataType>> options;
-
   CameraSetting({
     required this.changeFunction,
     required this.options,
   });
+  final Future<void> Function(DataType data) changeFunction;
+  final List<CameraSettingOption<DataType>> options;
 
   Future<void> change(int optionIndex) async {
     await changeFunction(options[optionIndex].data);
@@ -570,19 +569,18 @@ class CameraSetting<DataType> {
 }
 
 class CameraSettingOption<DataType> {
-  final DataType data;
-  final IconData icon;
-  final String? text;
-
   const CameraSettingOption({
     required this.data,
     required this.icon,
     this.text,
   });
+  final DataType data;
+  final IconData icon;
+  final String? text;
 }
 
 List<CameraSettingOption<int>> _generateCameraSwitchOptions() {
-  List<CameraSettingOption<int>> options = [];
+  final List<CameraSettingOption<int>> options = [];
   List<int> cameraIndexes;
   bool needText;
 

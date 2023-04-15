@@ -11,8 +11,8 @@ import 'package:note_repository/models/service.dart';
 
 class NavigationService extends Service {
   factory NavigationService() => _instance;
-  static final NavigationService _instance = NavigationService._();
   NavigationService._();
+  static final NavigationService _instance = NavigationService._();
 
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
@@ -28,18 +28,18 @@ class NavigationService extends Service {
     switch (navigationRoute.type) {
       case NavigationRouteType.screen:
         _navigatorKey.currentState!.push(
-          MaterialPageRoute(builder: (context) => navigationRoute.widget),
+          MaterialPageRoute<dynamic>(builder: (context) => navigationRoute.widget),
         );
         break;
       case NavigationRouteType.replacedScreen:
         final NavigatorState navigatorState = _navigatorKey.currentState!;
         navigatorState.popUntil((route) => route.isFirst);
         navigatorState.pushReplacement(
-          MaterialPageRoute(builder: (context) => navigationRoute.widget),
+          MaterialPageRoute<dynamic>(builder: (context) => navigationRoute.widget),
         );
         break;
       case NavigationRouteType.bottomSheet:
-        showModalBottomSheet(
+        showModalBottomSheet<void>(
           context: _context,
           isScrollControlled: true,
           barrierColor: Colors.transparent,
@@ -48,7 +48,7 @@ class NavigationService extends Service {
         );
         break;
       case NavigationRouteType.popup:
-        showCupertinoModalPopup(
+        showCupertinoModalPopup<void>(
           context: _context,
           barrierColor: Colors.transparent,
           filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),

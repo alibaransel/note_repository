@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:note_repository/constants/app_keys.dart';
 import 'package:note_repository/constants/app_navigation_routes.dart';
+import 'package:note_repository/constants/app_strings.dart';
 import 'package:note_repository/constants/design/app_colors.dart';
 import 'package:note_repository/constants/design/app_icons.dart';
-import 'package:note_repository/constants/app_keys.dart';
 import 'package:note_repository/constants/design/app_physics.dart';
 import 'package:note_repository/constants/design/app_sizes.dart';
-import 'package:note_repository/constants/app_strings.dart';
 import 'package:note_repository/interface/common/common_app_bar.dart';
 import 'package:note_repository/interface/common/common_text.dart';
 import 'package:note_repository/interface/customs/multiple_switch.dart';
 import 'package:note_repository/models/account.dart';
 import 'package:note_repository/models/setting.dart';
 import 'package:note_repository/models/setting_notifier.dart';
-import 'package:note_repository/services/navigation_service.dart';
 import 'package:note_repository/services/account_service.dart';
+import 'package:note_repository/services/navigation_service.dart';
 import 'package:note_repository/services/setting_service.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -109,13 +109,12 @@ class _AccountCard extends StatelessWidget {
 }
 
 class SettingCard extends StatelessWidget {
-  final SettingNotifier settingNotifier;
-
   const SettingCard(this.settingNotifier, {super.key});
+  final SettingNotifier settingNotifier;
 
   @override
   Widget build(BuildContext context) {
-    final Setting setting = settingNotifier.setting;
+    final Setting<dynamic> setting = settingNotifier.setting;
 
     return Container(
       height: AppSizes.xL,

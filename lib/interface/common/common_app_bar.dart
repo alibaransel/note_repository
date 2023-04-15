@@ -6,24 +6,23 @@ import 'package:note_repository/interface/common/common_icon_button.dart';
 import 'package:note_repository/services/navigation_service.dart';
 
 class CommonAppBar extends StatelessWidget with PreferredSizeWidget {
-  final bool centerTitles;
-  final bool autoAddBackButton;
-  final bool useScrolledUnderElevation;
-  final bool useCommonBackground;
-  final Color? color;
-  final List<Widget> titles;
-  final List<Widget> actions;
-
   const CommonAppBar({
+    required this.titles,
     super.key,
     this.centerTitles = true,
     this.autoAddBackButton = true,
     this.useScrolledUnderElevation = false,
     this.useCommonBackground = false,
     this.color,
-    required this.titles,
     this.actions = const [],
   });
+  final List<Widget> titles;
+  final bool centerTitles;
+  final bool autoAddBackButton;
+  final bool useScrolledUnderElevation;
+  final bool useCommonBackground;
+  final Color? color;
+  final List<Widget> actions;
 
   static const _appBarHeight = kToolbarHeight;
 
@@ -52,15 +51,12 @@ class CommonAppBar extends StatelessWidget with PreferredSizeWidget {
           : null,
       title: Row(
         children: [
-          autoAddBackButton && (ModalRoute.of(context)?.impliesAppBarDismissal ?? false)
-              ? centerTitles
-                  ? Expanded(child: Row(children: [_buildBackButton()]))
-                  : _buildBackButton()
-              : centerTitles
-                  ? const Spacer()
-                  : const SizedBox(width: AppSizes.spacingM),
-          centerTitles ? _buildTitles() : Expanded(child: _buildTitles()),
-          centerTitles ? Expanded(child: _buildActions()) : _buildActions(),
+          if (autoAddBackButton && (ModalRoute.of(context)?.impliesAppBarDismissal ?? false))
+            centerTitles ? Expanded(child: Row(children: [_buildBackButton()])) : _buildBackButton()
+          else
+            centerTitles ? const Spacer() : const SizedBox(width: AppSizes.spacingM),
+          if (centerTitles) _buildTitles() else Expanded(child: _buildTitles()),
+          if (centerTitles) Expanded(child: _buildActions()) else _buildActions(),
         ],
       ),
     );

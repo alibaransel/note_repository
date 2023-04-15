@@ -5,16 +5,15 @@ import 'package:note_repository/constants/design/app_colors.dart';
 import 'package:note_repository/constants/design/app_sizes.dart';
 
 class CommonBackground extends StatelessWidget {
-  final Widget child;
-  final double? borderRadius;
-  final Color? backgroundColor;
-
   const CommonBackground({
-    super.key,
     required this.child,
+    super.key,
     this.borderRadius,
     this.backgroundColor,
   });
+  final Widget child;
+  final double? borderRadius;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {

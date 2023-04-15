@@ -18,22 +18,21 @@ import 'package:note_repository/interface/customs/group_card.dart';
 import 'package:note_repository/interface/customs/note_card.dart';
 import 'package:note_repository/models/group.dart';
 import 'package:note_repository/services/id_service.dart';
+import 'package:note_repository/services/item_service.dart';
 import 'package:note_repository/services/navigation_service.dart';
 import 'package:note_repository/services/path_service.dart';
-import 'package:note_repository/services/item_service.dart';
 import 'package:note_repository/services/setting_service.dart';
 
 class GroupScreen extends StatefulWidget {
-  final String groupPath;
-  final PreferredSizeWidget? appBar;
-  final Color? backgroundColor;
-
   const GroupScreen({
-    super.key,
     required this.groupPath,
+    super.key,
     this.backgroundColor,
     this.appBar,
   });
+  final String groupPath;
+  final PreferredSizeWidget? appBar;
+  final Color? backgroundColor;
 
   @override
   State<GroupScreen> createState() => _GroupScreenState();

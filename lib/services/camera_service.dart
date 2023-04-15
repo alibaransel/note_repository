@@ -13,8 +13,8 @@ import 'package:note_repository/services/system_service.dart';
 
 class CameraService {
   factory CameraService() => _instance;
-  static final CameraService _instance = CameraService._();
   CameraService._();
+  static final CameraService _instance = CameraService._();
 
   static const Offset _centerOffset = Offset(0.5, 0.5);
 
@@ -45,7 +45,7 @@ class CameraService {
   Offset get focusAndExposurePoint => _focusAndExposurePoint;
   bool get focusOrExposurePointSupported => _focusPointSupported || _exposurePointSupported;
 
-  void _appStateListener() async {
+  Future<void> _appStateListener() async {
     //TODO: Improve this listener
     switch (SystemService().appState.value) {
       case AppLifecycleState.paused:
@@ -66,9 +66,9 @@ class CameraService {
   }
 
   void _fetchCameraIndexes() {
-    List<int> frontCameraIndexesCounted = [];
-    List<int> backCameraIndexesCounted = [];
-    List<int> externalCameraIndexesCounted = [];
+    final List<int> frontCameraIndexesCounted = [];
+    final List<int> backCameraIndexesCounted = [];
+    final List<int> externalCameraIndexesCounted = [];
     for (int i = 0; i < _cameras.length; i++) {
       () {
         switch (_cameras[i].lensDirection) {
@@ -317,5 +317,7 @@ enum CameraMediaType {
   video,
 }
 
-typedef CameraMediaCallback = FutureOr<void> Function(
-    {required CameraMediaType mediaType, required String mediaFileFullPath});
+typedef CameraMediaCallback = FutureOr<void> Function({
+  required CameraMediaType mediaType,
+  required String mediaFileFullPath,
+});

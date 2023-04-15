@@ -10,8 +10,8 @@ import 'package:note_repository/services/system_service.dart';
 class OrientationService extends Service
     with Disposable, AutoStoppable, ValueNotifiable<DeviceOrientation> {
   factory OrientationService() => _instance;
-  static final OrientationService _instance = OrientationService._();
   OrientationService._();
+  static final OrientationService _instance = OrientationService._();
 
   static const DeviceOrientation _defaultOrientation = DeviceOrientation.portraitUp;
   static const Duration _waitDurationBeforeNotify = Duration(milliseconds: 400);
