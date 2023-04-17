@@ -39,22 +39,23 @@ dependencies:
   http: ^0.13.5
 
   # Local Storage
-  path_provider: ^2.0.11
+  path_provider: ^2.0.11 # Except Web
 
   # Firebase & Google Sign In
-  firebase_core: ^2.1.1
-  firebase_auth: ^4.1.1
-  google_sign_in: ^5.4.1
-  cloud_firestore: ^4.0.4
+  firebase_core: ^2.1.1 # Windows, Linux
+  firebase_auth: ^4.1.1  # Windows, Linux
+  google_sign_in: ^5.4.1 # Windows, MacOS, Linux
+  cloud_firestore: ^4.0.4 # Windows, Linux
 
   # Camera
   camera: ^0.10.0+3
 
   #File rendering
-  video_player: ^2.4.7
+  video_player: ^2.4.7 # - Windows, MacOS, Linux
+  # media_kit: - Web
 
   # Responsivity
-  native_device_orientation: ^1.1.4
+  native_device_orientation: ^1.1.4 # Mobile only
 
   #Others
   share_plus: ^6.2.0
