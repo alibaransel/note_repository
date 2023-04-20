@@ -30,7 +30,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _prepareAppInMinTime();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _prepareAppInMinTime();
+    });
   }
 
   @override

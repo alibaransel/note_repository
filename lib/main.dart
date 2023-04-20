@@ -28,40 +28,31 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  late ThemeMode _themeMode;
-
-  void _themeModeListener() {
-    if (!mounted) return;
-    setState(() {
-      _themeMode = SettingService().themeMode.value;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
     ServiceService.onAppInit();
-    SettingService().themeMode.addListener(_themeModeListener);
-    _themeMode = SettingService().themeMode.value;
   }
 
   @override
   void dispose() {
     ServiceService.onAppDispose();
-    SettingService().themeMode.removeListener(_themeModeListener);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      navigatorKey: NavigationService().navigatorKey,
-      title: AppStrings.appName,
-      themeMode: _themeMode,
-      theme: AppThemes.light,
-      darkTheme: AppThemes.dark,
-      home: const SplashScreen(),
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: SettingService().themeMode,
+      builder: (_, themeMode, __) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        navigatorKey: NavigationService().navigatorKey,
+        title: AppStrings.appName,
+        themeMode: themeMode,
+        theme: AppThemes.light,
+        darkTheme: AppThemes.dark,
+        home: const SplashScreen(),
+      ),
     );
   }
 }

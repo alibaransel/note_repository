@@ -21,28 +21,7 @@ class _MultipleSwitchState extends State<MultipleSwitch> {
   static const Curve _curve = AppCurves.slide;
   static const Duration _slideAnimationDuration = AppDurations.m;
 
-  late int _index = widget.setting.value.index;
   late final _optionLength = widget.setting.setting.options.length;
-  //late NewSetting _setting;
-
-  void _listener() {
-    if (!mounted) return;
-    setState(() {
-      _index = widget.setting.value.index;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    widget.setting.addListener(_listener);
-  }
-
-  @override
-  void dispose() {
-    widget.setting.removeListener(_listener);
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,24 +60,31 @@ class _MultipleSwitchState extends State<MultipleSwitch> {
   }
 
   Widget _buildSelectionMark(double selectorEdgeLength) {
-    return AnimatedPositioned(
-      duration: _slideAnimationDuration,
-      curve: _curve,
-      top: (_edgeLength - selectorEdgeLength) / 2 + _thickness,
-      left:
-          (_edgeLength - selectorEdgeLength) / 2 + (_thickness + _edgeLength) * _index + _thickness,
-      onEnd: () => widget.setting.value = widget.setting.setting.options[_index].value,
-      child: Container(
-        height: selectorEdgeLength,
-        width: selectorEdgeLength,
-        decoration: BoxDecoration(
-          color: const Color(0xFF00FF0A).withOpacity(0.3),
-          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-          border: Border.all(
-            color: const Color(0xFF00FF0A),
+    return ValueListenableBuilder<Enum>(
+      valueListenable: widget.setting,
+      builder: (_, value, __) {
+        final int index = value.index;
+        return AnimatedPositioned(
+          duration: _slideAnimationDuration,
+          curve: _curve,
+          top: (_edgeLength - selectorEdgeLength) / 2 + _thickness,
+          left: (_edgeLength - selectorEdgeLength) / 2 +
+              (_thickness + _edgeLength) * index +
+              _thickness,
+          //onEnd: () => widget.setting.value = widget.setting.setting.options[index].value,
+          child: Container(
+            height: selectorEdgeLength,
+            width: selectorEdgeLength,
+            decoration: BoxDecoration(
+              color: const Color(0xFF00FF0A).withOpacity(0.3),
+              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+              border: Border.all(
+                color: const Color(0xFF00FF0A),
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -114,9 +100,7 @@ class _MultipleSwitchState extends State<MultipleSwitch> {
             margin: EdgeInsets.only(left: index != 0 ? _thickness : 0),
             child: GestureDetector(
               onTap: () {
-                setState(() {
-                  _index = index;
-                });
+                widget.setting.value = widget.setting.setting.options[index].value;
               },
               child: Container(
                 height: _edgeLength,

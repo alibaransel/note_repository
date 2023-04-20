@@ -12,7 +12,10 @@ class SettingService extends Service with Initable {
   SettingService._();
   static final SettingService _instance = SettingService._();
 
-  late final SettingNotifier<ThemeMode> _themeModeNotifier;
+  final SettingNotifier<ThemeMode> _themeModeNotifier = SettingNotifier(
+    setting: AppSettings.themeMode,
+    firstValue: ThemeMode.system,
+  );
   late final SettingNotifier<LayoutMode> _layoutModeNotifier;
 
   SettingNotifier<ThemeMode> get themeMode => _themeModeNotifier;
@@ -22,10 +25,7 @@ class SettingService extends Service with Initable {
   Future<void> init() async {
     if (isInitialized) return;
     final Map<String, dynamic> data = await StorageService.file.getData(AppPaths.settings);
-    _themeModeNotifier = SettingNotifier(
-      setting: AppSettings.themeMode,
-      firstValue: ThemeMode.values.byName(data[AppKeys.themeMode] as String),
-    );
+    _themeModeNotifier.value = ThemeMode.values.byName(data[AppKeys.themeMode] as String);
     _layoutModeNotifier = SettingNotifier(
       setting: AppSettings.layoutMode,
       firstValue: LayoutMode.values.byName(data[AppKeys.layoutMode] as String),

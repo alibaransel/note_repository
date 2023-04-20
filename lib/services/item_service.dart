@@ -4,34 +4,39 @@ import 'package:note_repository/constants/app_id_codes.dart';
 import 'package:note_repository/constants/app_keys.dart';
 import 'package:note_repository/models/group.dart';
 import 'package:note_repository/models/note.dart';
+import 'package:note_repository/models/service.dart';
 import 'package:note_repository/services/id_service.dart';
 import 'package:note_repository/services/path_service.dart';
 import 'package:note_repository/services/storage_service.dart';
 import 'package:note_repository/services/time_service.dart';
 import 'package:share_plus/share_plus.dart';
 
-class ItemService with ChangeNotifier {
+class ItemService extends Service with Disposable {
+  ItemService(
+    this.groupPath,
+  );
+
   static final Map<String, ItemService> _itemPathServiceMap = {};
   static ItemService get lastItemService => _itemPathServiceMap.values.last;
 
-  late Group _group;
+  final String groupPath;
 
-  Future<void> addListenerAndSetup({
-    required VoidCallback listener,
-    required String groupPath,
-  }) async {
-    addListener(listener);
+  late ValueNotifier<Group> _group;
+
+  ValueNotifier<Group> get group => _group;
+
+  @override
+  Future<void> init() async {
     _itemPathServiceMap[groupPath] = this;
-    _group = await const _GroupService._().getGroup(groupPath);
+    _group = ValueNotifier(await const _GroupService._().getGroup(groupPath));
+    super.init();
   }
 
   @override
-  void removeListener(VoidCallback listener) {
-    super.removeListener(listener);
-    _itemPathServiceMap.remove(_group.path);
+  void dispose() {
+    _itemPathServiceMap.remove(groupPath);
+    super.dispose();
   }
-
-  Group get group => _group;
 
   bool _isNameExist({required String name, required List<String> ids}) {
     for (final String id in ids) {
@@ -41,41 +46,39 @@ class ItemService with ChangeNotifier {
   }
 
   Future<String> tryCreateGroup(GroupInfo newGroupInfo) async {
-    final String response = await const _GroupService._()
-        .tryCreate(newGroupInfo: newGroupInfo, parentGroupPath: _group.path);
+    final String response = await const _GroupService._().tryCreate(
+      newGroupInfo: newGroupInfo,
+      parentGroupPath: groupPath,
+    );
     if (response == AppKeys.done) {
-      _group.subGroupInfos.add(newGroupInfo);
-      notifyListeners();
+      _group.value.subGroupInfos.add(newGroupInfo);
     }
     return response;
   }
 
   Future<void> deleteGroup() async {
-    await const _GroupService._().delete(_group.path);
-    _itemPathServiceMap[PathService().parentGroup(_group.path)]!
-        ._deleteSubGroup(PathService().id(_group.path));
-    notifyListeners();
+    await const _GroupService._().delete(groupPath);
+    _itemPathServiceMap[PathService().parentGroup(groupPath)]!
+        ._deleteSubGroup(PathService().id(groupPath));
   }
 
   void _deleteSubGroup(String id) {
     final GroupInfo groupInfo = IdService.decodeGroupInfo(id);
-    _group.subGroupInfos.removeWhere((element) => element.name == groupInfo.name);
-    notifyListeners();
+    _group.value.subGroupInfos.removeWhere((element) => element.name == groupInfo.name);
   }
 
   Future<String> tryCreateNote({required NoteType type, required String realMediaPath}) async {
     final NoteInfo noteInfo = await const _NoteService._().tryCreateNoteInfo(
-      groupPath: _group.path,
+      groupPath: groupPath,
       type: type,
     );
     final String response = await const _NoteService._().tryCreate(
-      groupPath: _group.path,
+      groupPath: groupPath,
       realMediaPath: realMediaPath,
       noteInfo: noteInfo,
     );
     if (response == AppKeys.done) {
-      _group.noteInfos.add(noteInfo);
-      notifyListeners();
+      _group.value.noteInfos.add(noteInfo);
     }
     return response;
   }
@@ -85,10 +88,9 @@ class ItemService with ChangeNotifier {
   Future<void> deleteNote(String notePath) async {
     await const _NoteService._().deleteNote(notePath);
     final String name = IdService.decodeNoteInfo(PathService().id(notePath)).name;
-    _group.noteInfos.removeWhere(
+    _group.value.noteInfos.removeWhere(
       (element) => element.name == name,
     );
-    notifyListeners();
   }
 
   Future<void> shareNote(String notePath) async {
@@ -158,7 +160,7 @@ class _GroupService {
       final Map<String, dynamic> groupIdsData =
           await StorageService.file.getData(PathService().groupGroupIds(parentGroupPath));
       final List<String> groupIds = groupIdsData[AppKeys.data] as List<String>? ?? [];
-      if (ItemService()._isNameExist(name: newGroupInfo.name, ids: groupIds)) {
+      if (ItemService.lastItemService._isNameExist(name: newGroupInfo.name, ids: groupIds)) {
         return AppKeys.nameExist;
       }
       groupIds.add(IdService.encodeGroupInfo(newGroupInfo));
@@ -274,8 +276,12 @@ class _NoteService {
       final String id = IdService.encodeNoteInfo(noteInfo);
       final Map<String, dynamic> noteIdsData =
           await StorageService.file.getData(PathService().groupNoteIds(groupPath));
-      final List<String> noteIds = noteIdsData[AppKeys.data] as List<String>? ?? [];
-      if (ItemService()._isNameExist(name: noteInfo.name, ids: noteIds)) return AppKeys.nameExist;
+      final List<String> noteIds = noteIdsData[AppKeys.data] is List<String>
+          ? noteIdsData[AppKeys.data] as List<String>
+          : <String>[];
+      if (ItemService.lastItemService._isNameExist(name: noteInfo.name, ids: noteIds)) {
+        return AppKeys.nameExist;
+      }
       noteIds.add(id);
       await StorageService.file.setData(
         path: PathService().groupNoteIds(groupPath),
@@ -303,7 +309,8 @@ class _NoteService {
         },
       );
       return AppKeys.done;
-    } catch (_) {
+    } catch (e) {
+      print(e);
       return AppKeys.error;
     }
   }

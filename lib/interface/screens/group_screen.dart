@@ -41,58 +41,18 @@ class GroupScreen extends StatefulWidget {
 class _GroupScreenState extends State<GroupScreen> {
   static const _fabAnimationDuration = AppDurations.m;
 
-  final ItemService _itemService = ItemService();
   final ScrollController _scrollController = ScrollController();
 
+  late final ItemService _itemService;
   late final GroupInfo _groupInfo;
   late final String _parentGroupPath;
-
-  bool _ready = false;
-  bool _isFABVisible = true;
-
-  void _listener() {
-    if (!mounted) return;
-    setState(() {});
-  }
-
-  void _scrollListener() {
-    if (!mounted) return;
-    if (_scrollController.position.userScrollDirection == ScrollDirection.reverse) {
-      if (_isFABVisible) {
-        setState(() {
-          _isFABVisible = false;
-        });
-      }
-    } else {
-      if (!_isFABVisible) {
-        setState(() {
-          _isFABVisible = true;
-        });
-      }
-    }
-  }
 
   @override
   void initState() {
     super.initState();
     _groupInfo = IdService.decodeGroupInfo(PathService().id(widget.groupPath));
     _parentGroupPath = PathService().parentGroup(widget.groupPath);
-
-    SettingService().layoutMode.addListener(_listener);
-    _itemService.addListenerAndSetup(listener: _listener, groupPath: widget.groupPath).then((_) {
-      setState(() {
-        _ready = true;
-      });
-    });
-    _scrollController.addListener(_scrollListener);
-  }
-
-  @override
-  void dispose() {
-    SettingService().layoutMode.removeListener(_listener);
-    _itemService.removeListener(_listener);
-    _scrollController.removeListener(_scrollListener);
-    super.dispose();
+    _itemService = ItemService(widget.groupPath);
   }
 
   @override
@@ -151,7 +111,7 @@ class _GroupScreenState extends State<GroupScreen> {
           iconSize: AppSizes.iconM,
           icon: AppIcons.delete,
           onTap: () async {
-            if (_ready) {
+            if (_itemService.isInitialized) {
               await _itemService.deleteGroup();
               NavigationService().hide();
             }
@@ -162,72 +122,100 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   Widget _buildFAB() {
-    return AnimatedSlide(
-      duration: _fabAnimationDuration,
-      curve: AppCurves.slide,
-      offset: _isFABVisible ? Offset.zero : const Offset(0, 1),
-      child: AnimatedSwitcher(
-        duration: _fabAnimationDuration,
-        child: _isFABVisible
-            ? GestureDetector(
-                onTap: () => NavigationService().show(AppNavigationRoutes.addMedia),
-                onLongPress: () => NavigationService().show(AppNavigationRoutes.createGroup),
-                child: const CommonBackground(
-                  child: SizedBox(
-                    height: AppSizes.createButton,
-                    width: AppSizes.createButton,
-                    child: Icon(
-                      AppIcons.add,
-                      size: AppSizes.iconL,
+    return AnimatedBuilder(
+      animation: _scrollController,
+      builder: (_, __) {
+        // TODO: Don't rebuild when scroll direction not changed
+        //print('Rebuilding ${DateTime.now()}');
+        late final bool isFABVisible;
+        if (!_scrollController.hasClients) {
+          isFABVisible = true;
+        } else {
+          isFABVisible = _scrollController.position.userScrollDirection != ScrollDirection.reverse;
+        }
+        return AnimatedSlide(
+          duration: _fabAnimationDuration,
+          curve: AppCurves.slide,
+          offset: isFABVisible ? Offset.zero : const Offset(0, 1),
+          child: AnimatedSwitcher(
+            duration: _fabAnimationDuration,
+            child: isFABVisible
+                ? GestureDetector(
+                    onTap: () => NavigationService().show(AppNavigationRoutes.addMedia),
+                    onLongPress: () => NavigationService().show(AppNavigationRoutes.createGroup),
+                    child: const CommonBackground(
+                      child: SizedBox(
+                        height: AppSizes.createButton,
+                        width: AppSizes.createButton,
+                        child: Icon(
+                          AppIcons.add,
+                          size: AppSizes.iconL,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              )
-            : null,
-      ),
+                  )
+                : null,
+          ),
+        );
+      },
     );
   }
 
   Widget _buildBody() {
-    return AnimatedSwitcher(
-      duration: AppDurations.m,
-      child: () {
-        if (!_ready) return const CommonLoadingIndicator();
-        if (_itemService.group.subGroupInfos.isEmpty && _itemService.group.noteInfos.isEmpty) {
-          return CommonInfoBody.empty;
-        }
-        return _buildItemsView();
-      }(),
+    return FutureBuilder(
+      future: _itemService.init(),
+      builder: (context, snapshot) {
+        return AnimatedSwitcher(
+          duration: AppDurations.m,
+          child: () {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CommonLoadingIndicator();
+            }
+            if (_itemService.group.value.subGroupInfos.isEmpty &&
+                _itemService.group.value.noteInfos.isEmpty) {
+              return CommonInfoBody.empty;
+            }
+            return _buildItemsView();
+          }(),
+        );
+      },
     );
   }
 
   Widget _buildItemsView() {
-    return GridView.builder(
-      itemCount: _itemService.group.subGroupInfos.length + _itemService.group.noteInfos.length,
-      padding: EdgeInsets.only(
-        top: AppSizes.spacingM + CommonAppBar.heightWithStatusBar(context),
-        bottom: AppSizes.spacingM,
-        left: AppSizes.spacingM,
-        right: AppSizes.spacingM,
-      ),
-      physics: AppPhysics.mainWithAlwaysScroll,
-      controller: _scrollController,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        mainAxisSpacing: AppSizes.spacingM,
-        crossAxisSpacing: AppSizes.spacingM,
-        crossAxisCount: SettingService().layoutMode.value == LayoutMode.list ? 1 : 2,
-        mainAxisExtent: AppSizes.l,
-      ),
-      itemBuilder: (BuildContext context, int index) {
-        if (index < _itemService.group.subGroupInfos.length) {
-          return GroupCard(
-            groupInfo: _itemService.group.subGroupInfos[index],
-            parentGroupPath: widget.groupPath,
-          );
-        }
-        return NoteCard(
-          noteInfo: _itemService.group.noteInfos[index - _itemService.group.subGroupInfos.length],
-          groupPath: widget.groupPath,
+    return ValueListenableBuilder<LayoutMode>(
+      valueListenable: SettingService().layoutMode,
+      builder: (_, layoutMode, __) {
+        return GridView.builder(
+          padding: EdgeInsets.only(
+            top: AppSizes.spacingM + CommonAppBar.heightWithStatusBar(context),
+            bottom: AppSizes.spacingM,
+            left: AppSizes.spacingM,
+            right: AppSizes.spacingM,
+          ),
+          physics: AppPhysics.mainWithAlwaysScroll,
+          controller: _scrollController,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            mainAxisSpacing: AppSizes.spacingM,
+            crossAxisSpacing: AppSizes.spacingM,
+            crossAxisCount: layoutMode == LayoutMode.list ? 1 : 2,
+            mainAxisExtent: AppSizes.l,
+          ),
+          itemCount: _itemService.group.value.subGroupInfos.length +
+              _itemService.group.value.noteInfos.length,
+          itemBuilder: (BuildContext context, int index) {
+            if (index < _itemService.group.value.subGroupInfos.length) {
+              return GroupCard(
+                groupInfo: _itemService.group.value.subGroupInfos[index],
+                parentGroupPath: widget.groupPath,
+              );
+            }
+            return NoteCard(
+              noteInfo: _itemService
+                  .group.value.noteInfos[index - _itemService.group.value.subGroupInfos.length],
+              groupPath: widget.groupPath,
+            );
+          },
         );
       },
     );
