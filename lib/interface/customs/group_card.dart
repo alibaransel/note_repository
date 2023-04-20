@@ -5,17 +5,18 @@ import 'package:note_repository/constants/design/app_icons.dart';
 import 'package:note_repository/constants/design/app_sizes.dart';
 import 'package:note_repository/interface/common/common_text.dart';
 import 'package:note_repository/models/group.dart';
+import 'package:note_repository/services/item_service.dart';
 import 'package:note_repository/services/navigation_service.dart';
 import 'package:note_repository/services/path_service.dart';
 
 class GroupCard extends StatelessWidget {
   const GroupCard({
     required this.groupInfo,
-    required this.parentGroupPath,
+    required this.groupService,
     super.key,
   });
   final GroupInfo groupInfo;
-  final String parentGroupPath;
+  final GroupService groupService;
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +25,10 @@ class GroupCard extends StatelessWidget {
         NavigationService().show(
           AppNavigationRoutes.group(
             groupPath: PathService().group(
-              parentGroupPath: parentGroupPath,
+              parentGroupPath: groupService.groupPath,
               groupInfo: groupInfo,
             ),
+            parentGroupService: groupService,
           ),
         );
       },
@@ -34,7 +36,7 @@ class GroupCard extends StatelessWidget {
         children: [
           Positioned.fill(
             child: Hero(
-              tag: '${AppKeys.groupBackgroundTag}-$parentGroupPath-${groupInfo.name}',
+              tag: '${AppKeys.groupBackgroundTag}-${groupService.groupPath}-${groupInfo.name}',
               child: Container(
                 decoration: BoxDecoration(
                   color: groupInfo.color,
@@ -50,7 +52,7 @@ class GroupCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Hero(
-                      tag: '${AppKeys.groupTitleTag}-$parentGroupPath-${groupInfo.name}',
+                      tag: '${AppKeys.groupTitleTag}-${groupService.groupPath}-${groupInfo.name}',
                       child: Material(
                         type: MaterialType.transparency,
                         child: Row(

@@ -8,6 +8,7 @@ import 'package:note_repository/constants/design/app_sizes.dart';
 import 'package:note_repository/interface/common/common_app_bar.dart';
 import 'package:note_repository/interface/common/common_icon_button.dart';
 import 'package:note_repository/interface/screens/group_screen.dart';
+import 'package:note_repository/services/item_service.dart';
 import 'package:note_repository/services/navigation_service.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -17,6 +18,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return GroupScreen(
       groupPath: AppPaths.mainGroup,
+      parentGroupService: GroupService(groupPath: ''),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: _buildAppBar(),
     );

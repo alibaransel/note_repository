@@ -26,11 +26,14 @@ import 'package:note_repository/services/setting_service.dart';
 class GroupScreen extends StatefulWidget {
   const GroupScreen({
     required this.groupPath,
+    required this.parentGroupService,
     super.key,
     this.backgroundColor,
     this.appBar,
   });
+
   final String groupPath;
+  final GroupService parentGroupService;
   final PreferredSizeWidget? appBar;
   final Color? backgroundColor;
 
@@ -43,7 +46,8 @@ class _GroupScreenState extends State<GroupScreen> {
 
   final ScrollController _scrollController = ScrollController();
 
-  late final ItemService _itemService;
+  //late final ItemService _itemService;
+  late final GroupService _groupService;
   late final GroupInfo _groupInfo;
   late final String _parentGroupPath;
 
@@ -52,7 +56,11 @@ class _GroupScreenState extends State<GroupScreen> {
     super.initState();
     _groupInfo = IdService.decodeGroupInfo(PathService().id(widget.groupPath));
     _parentGroupPath = PathService().parentGroup(widget.groupPath);
-    _itemService = ItemService(widget.groupPath);
+    //_itemService = ItemService(widget.groupPath);
+    _groupService = GroupService(
+      groupPath: widget.groupPath,
+      parentGroupService: widget.parentGroupService,
+    );
   }
 
   @override
@@ -111,10 +119,10 @@ class _GroupScreenState extends State<GroupScreen> {
           iconSize: AppSizes.iconM,
           icon: AppIcons.delete,
           onTap: () async {
-            if (_itemService.isInitialized) {
-              await _itemService.deleteGroup();
-              NavigationService().hide();
-            }
+            if (_groupService.isNotInitialized) return;
+            NavigationService().hide();
+            await Future<void>.delayed(AppDurations.l);
+            await _groupService.delete();
           },
         )
       ],
@@ -141,8 +149,12 @@ class _GroupScreenState extends State<GroupScreen> {
             duration: _fabAnimationDuration,
             child: isFABVisible
                 ? GestureDetector(
-                    onTap: () => NavigationService().show(AppNavigationRoutes.addMedia),
-                    onLongPress: () => NavigationService().show(AppNavigationRoutes.createGroup),
+                    onTap: () => NavigationService().show(
+                      AppNavigationRoutes.addMediaAndCamera(_groupService),
+                    ),
+                    onLongPress: () => NavigationService().show(
+                      AppNavigationRoutes.createGroup(_groupService),
+                    ),
                     child: const CommonBackground(
                       child: SizedBox(
                         height: AppSizes.createButton,
@@ -162,21 +174,23 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   Widget _buildBody() {
+    //TODO: Prevent multiple init call while rebuilding
     return FutureBuilder(
-      future: _itemService.init(),
+      future: _groupService.init(),
       builder: (context, snapshot) {
         return AnimatedSwitcher(
           duration: AppDurations.m,
-          child: () {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CommonLoadingIndicator();
-            }
-            if (_itemService.group.value.subGroupInfos.isEmpty &&
-                _itemService.group.value.noteInfos.isEmpty) {
-              return CommonInfoBody.empty;
-            }
-            return _buildItemsView();
-          }(),
+          child: snapshot.connectionState == ConnectionState.waiting
+              ? const CommonLoadingIndicator()
+              : ValueListenableBuilder<Group>(
+                  valueListenable: _groupService.group,
+                  builder: (_, group, __) {
+                    if (group.subGroupInfos.isEmpty && group.noteInfos.isEmpty) {
+                      return CommonInfoBody.empty;
+                    }
+                    return _buildItemsView();
+                  },
+                ),
         );
       },
     );
@@ -201,19 +215,20 @@ class _GroupScreenState extends State<GroupScreen> {
             crossAxisCount: layoutMode == LayoutMode.list ? 1 : 2,
             mainAxisExtent: AppSizes.l,
           ),
-          itemCount: _itemService.group.value.subGroupInfos.length +
-              _itemService.group.value.noteInfos.length,
+          itemCount: _groupService.group.value.subGroupInfos.length +
+              _groupService.group.value.noteInfos.length,
           itemBuilder: (BuildContext context, int index) {
-            if (index < _itemService.group.value.subGroupInfos.length) {
+            if (index < _groupService.group.value.subGroupInfos.length) {
               return GroupCard(
-                groupInfo: _itemService.group.value.subGroupInfos[index],
-                parentGroupPath: widget.groupPath,
+                groupInfo: _groupService.group.value.subGroupInfos[index],
+                groupService: _groupService,
               );
             }
             return NoteCard(
-              noteInfo: _itemService
-                  .group.value.noteInfos[index - _itemService.group.value.subGroupInfos.length],
+              noteInfo: _groupService
+                  .group.value.noteInfos[index - _groupService.group.value.subGroupInfos.length],
               groupPath: widget.groupPath,
+              groupService: _groupService,
             );
           },
         );

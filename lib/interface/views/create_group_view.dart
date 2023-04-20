@@ -16,7 +16,12 @@ import 'package:note_repository/services/item_service.dart';
 import 'package:note_repository/services/navigation_service.dart';
 
 class CreateGroupView extends StatefulWidget {
-  const CreateGroupView({super.key});
+  const CreateGroupView(
+    this.groupService, {
+    super.key,
+  });
+
+  final GroupService groupService;
 
   @override
   State<CreateGroupView> createState() => _CreateGroupViewState();
@@ -38,7 +43,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   );
 
   int _currentColorIndex = 0;
-  String _response = '';
+  final String _response = '';
   String _alertText = '';
 
   Future<void> tryCreateGroup() async {
@@ -48,6 +53,20 @@ class _CreateGroupViewState extends State<CreateGroupView> {
       });
       return;
     }
+    try {
+      await widget.groupService.createGroup(
+        GroupInfo(
+          name: _groupNameTextController.text,
+          dateTime: DateTime.now(),
+          color: _colorList[_currentColorIndex],
+        ),
+      );
+      NavigationService().hide();
+    } catch (e) {
+      print(e);
+    }
+
+    /*
     _response = await ItemService.lastItemService.tryCreateGroup(
       GroupInfo(
         name: _groupNameTextController.text,
@@ -62,6 +81,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     setState(() {
       _alertText = _response; //TODO
     });
+    */
   }
 
   @override

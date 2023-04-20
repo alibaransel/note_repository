@@ -1,8 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:note_repository/constants/app_exception_messages.dart';
-import 'package:note_repository/constants/app_keys.dart';
 import 'package:note_repository/constants/app_strings.dart';
 import 'package:note_repository/constants/design/app_colors.dart';
 import 'package:note_repository/constants/design/app_curves.dart';
@@ -14,14 +12,18 @@ import 'package:note_repository/interface/common/common_background.dart';
 import 'package:note_repository/interface/common/common_icon_button.dart';
 import 'package:note_repository/interface/common/common_info_body.dart';
 import 'package:note_repository/interface/common/common_loading_indicator.dart';
-import 'package:note_repository/models/message.dart';
 import 'package:note_repository/models/note.dart';
 import 'package:note_repository/services/camera_service.dart';
 import 'package:note_repository/services/item_service.dart';
 import 'package:note_repository/services/navigation_service.dart';
 
 class CameraScreen extends StatefulWidget {
-  const CameraScreen({super.key});
+  const CameraScreen(
+    this._groupService, {
+    super.key,
+  });
+
+  final GroupService _groupService;
 
   @override
   State<CameraScreen> createState() => _CameraScreenState();
@@ -74,22 +76,25 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
     required CameraMediaType mediaType,
     required String mediaFileFullPath,
   }) async {
-    final String response = await ItemService.lastItemService.tryCreateNote(
+    await widget._groupService.createNote(
       type: mediaType == CameraMediaType.image ? NoteType.image : NoteType.video,
       realMediaPath: mediaFileFullPath,
+      deleteOriginalFile: true,
     );
-    NavigationService().hide(); //TODO
+    NavigationService().hide();
+    //TODO
+    /*
     if (response == AppKeys.error) {
       NavigationService().showSnackBar(AppExceptionMessages.error);
     }
+    */
   }
 
   Future<void> _import() async {
-    final String result = await ItemService.lastItemService.tryCreateNoteWithImporting();
-    if (result == AppKeys.done) {
-      NavigationService().hide();
-    }
-    NavigationService().showSnackBar(InfoMessage(result));
+    await widget._groupService.createNoteWithImporting();
+    NavigationService().hide();
+    //TODO
+    //NavigationService().showSnackBar(InfoMessage(result));
   }
 
   Future<void> _changeCameraSettingBox(CameraSetting<dynamic> newCameraSetting) async {

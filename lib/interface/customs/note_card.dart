@@ -6,6 +6,7 @@ import 'package:note_repository/constants/design/app_colors.dart';
 import 'package:note_repository/constants/design/app_icons.dart';
 import 'package:note_repository/constants/design/app_sizes.dart';
 import 'package:note_repository/models/note.dart';
+import 'package:note_repository/services/item_service.dart';
 import 'package:note_repository/services/navigation_service.dart';
 import 'package:note_repository/services/path_service.dart';
 
@@ -13,17 +14,25 @@ class NoteCard extends StatelessWidget {
   const NoteCard({
     required this.noteInfo,
     required this.groupPath,
+    required this.groupService,
     super.key,
   });
+
   final NoteInfo noteInfo;
   final String groupPath;
+  final GroupService groupService;
 
   @override
   Widget build(BuildContext context) {
     final String notePath = PathService().note(groupPath: groupPath, noteInfo: noteInfo);
 
     return GestureDetector(
-      onTap: () => NavigationService().show(AppNavigationRoutes.note(notePath)),
+      onTap: () => NavigationService().show(
+        AppNavigationRoutes.note(
+          notePath: notePath,
+          groupService: groupService,
+        ),
+      ),
       child: Stack(
         children: [
           Positioned.fill(

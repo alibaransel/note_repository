@@ -21,12 +21,15 @@ import 'package:note_repository/services/ui_service.dart';
 import 'package:video_player/video_player.dart';
 
 class NoteScreen extends StatefulWidget {
-  const NoteScreen(
-    this.notePath, {
+  const NoteScreen({
+    //TODO: Get Note object instead of note path
+    required this.notePath,
+    required this.groupService,
     super.key,
   });
 
   final String notePath;
+  final GroupService groupService;
 
   @override
   State<NoteScreen> createState() => _NoteScreenState();
@@ -56,7 +59,7 @@ class _NoteScreenState extends State<NoteScreen> with WidgetsBindingObserver {
   }
 
   Future<void> _fetch() async {
-    _note = await ItemService.lastItemService.getNote(widget.notePath);
+    _note = await widget.groupService.getNote(widget.notePath);
     switch (_note.info.type) {
       case NoteType.image:
         if (!mounted) return;
@@ -422,7 +425,7 @@ class _NoteScreenState extends State<NoteScreen> with WidgetsBindingObserver {
                 iconSize: AppSizes.iconM,
                 icon: AppIcons.share,
                 onTap: () async {
-                  await ItemService.lastItemService.shareNote(_note.file.path);
+                  await widget.groupService.shareNote(_note.file.path);
                 },
               ),
               CommonIconButton(
@@ -431,7 +434,7 @@ class _NoteScreenState extends State<NoteScreen> with WidgetsBindingObserver {
                 icon: AppIcons.delete,
                 onTap: () async {
                   if (_ready) {
-                    await ItemService.lastItemService.deleteNote(widget.notePath);
+                    await widget.groupService.deleteNote(widget.notePath);
                     NavigationService().hide();
                   }
                 },
