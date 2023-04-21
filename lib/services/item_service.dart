@@ -1,4 +1,3 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:note_repository/constants/app_keys.dart';
 import 'package:note_repository/models/group.dart';
@@ -6,6 +5,7 @@ import 'package:note_repository/models/group_notifier.dart';
 import 'package:note_repository/models/note.dart';
 import 'package:note_repository/models/service.dart';
 import 'package:note_repository/services/id_service.dart';
+import 'package:note_repository/services/import_service.dart';
 import 'package:note_repository/services/path_service.dart';
 import 'package:note_repository/services/storage_service.dart';
 import 'package:note_repository/services/time_service.dart';
@@ -118,7 +118,6 @@ class GroupService extends Service with Initable {
 
   //Future<void> editGroup() async {}
   Future<void> deleteGroup(GroupInfo groupInfo) async {
-    //final String parentGroupPath = PathService().parentGroup(groupPath);
     final String groupIdsPath = PathService().groupGroupIds(groupPath);
     final Map<String, dynamic> groupIdsData = await StorageService.file.getData(groupIdsPath);
     final List<dynamic> groupIds = groupIdsData[AppKeys.data] as List<dynamic>
@@ -168,8 +167,8 @@ class GroupService extends Service with Initable {
         await StorageService.file.getData(PathService().groupNoteIds(groupPath));
     final List<String> noteIds = noteIdsData[AppKeys.data] is List<String>
         ? noteIdsData[AppKeys.data] as List<String>
-        : <String>[];
-    noteIds.add(id);
+        : <String>[]
+      ..add(id);
     await StorageService.file.setData(
       path: PathService().groupNoteIds(groupPath),
       data: {
@@ -199,42 +198,20 @@ class GroupService extends Service with Initable {
   }
 
   Future<void> createNoteWithImporting() async {
-    //TODO: Refactor all of this file
-    //TODO: Complete Android and iOS setup
-    //TODO: Improve a lot of thing
-    //Catch access denied error
-    //Check aspect ratio of image or video on note screen
-    //Add file converting support
-    //Maybe use platform specific file types
-    //...
-    const List<String> allowedImageExtensions = ['jpg', 'jpeg'];
-    const List<String> allowedVideoExtensions = ['mp4'];
-    const List<String> allowedAudioExtensions = [];
-    const List<String> allowedExtensions = [
-      ...allowedImageExtensions,
-      ...allowedVideoExtensions,
-      ...allowedAudioExtensions
-    ];
-
-    final FilePickerResult? filePickerResult = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: allowedExtensions,
-    );
-    final String? pickedFilePath = filePickerResult?.files.first.path;
-    if (pickedFilePath == null) return;
-    final String pickedFileExtension = pickedFilePath.split('.').last;
+    final String filePath = await ImportService().importSingleFile();
+    final String pickedFileExtension = filePath.split('.').last;
     NoteType? noteType;
-    if (allowedImageExtensions.contains(pickedFileExtension)) {
+    if (ImportService.allowedImageExtensions.contains(pickedFileExtension)) {
       noteType = NoteType.image;
-    } else if (allowedVideoExtensions.contains(pickedFileExtension)) {
+    } else if (ImportService.allowedVideoExtensions.contains(pickedFileExtension)) {
       noteType = NoteType.video;
-    } else if (allowedAudioExtensions.contains(pickedFileExtension)) {
+    } else if (ImportService.allowedAudioExtensions.contains(pickedFileExtension)) {
       noteType = NoteType.audio;
     }
-    if (noteType == null) throw Exception(''); //TODO
+    if (noteType == null) throw ''; //TODO
     await createNote(
       type: noteType,
-      realMediaPath: pickedFilePath,
+      realMediaPath: filePath,
       deleteOriginalFile: false,
     );
     //await FilePicker.platform.clearTemporaryFiles();//TODO (Note: only working on Android and iOS)
