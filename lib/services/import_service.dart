@@ -2,10 +2,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:note_repository/models/service.dart';
 
 class ImportService extends Service {
-  factory ImportService() => _instance;
-  ImportService._();
-  static final _instance = ImportService._();
-
   static const List<String> allowedImageExtensions = ['jpg', 'jpeg'];
   static const List<String> allowedVideoExtensions = ['mp4'];
   static const List<String> allowedAudioExtensions = [];
@@ -15,7 +11,7 @@ class ImportService extends Service {
     ...allowedAudioExtensions
   ];
 
-  Future<List<String>> _importFiles({required bool multipleFile}) async {
+  static Future<List<String>> _importFiles({required bool multipleFile}) async {
     //TODO: Refactor all of this file
     //TODO: Complete Android and iOS setup
     //TODO: Improve a lot of thing
@@ -35,7 +31,7 @@ class ImportService extends Service {
     return filePickerResult.paths.cast<String>();
   }
 
-  Future<String> importSingleFile() async => (await _importFiles(multipleFile: false)).first;
+  static Future<String> importSingleFile() async => (await _importFiles(multipleFile: false)).first;
 
-  Future<List<String>> importMultipleFiles() => _importFiles(multipleFile: true);
+  static Future<List<String>> importMultipleFiles() => _importFiles(multipleFile: true);
 }

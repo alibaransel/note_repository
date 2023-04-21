@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:note_repository/constants/app_keys.dart';
 import 'package:note_repository/models/group.dart';
@@ -199,7 +198,7 @@ class GroupService extends Service with Initable {
   }
 
   Future<void> createNoteWithImporting() async {
-    final String filePath = await ImportService().importSingleFile();
+    final String filePath = await ImportService.importSingleFile();
     final String pickedFileExtension = filePath.split('.').last;
     NoteType? noteType;
     if (ImportService.allowedImageExtensions.contains(pickedFileExtension)) {
