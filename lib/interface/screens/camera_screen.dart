@@ -14,7 +14,7 @@ import 'package:note_repository/interface/common/common_info_body.dart';
 import 'package:note_repository/interface/common/common_loading_indicator.dart';
 import 'package:note_repository/models/note.dart';
 import 'package:note_repository/services/camera_service.dart';
-import 'package:note_repository/services/item_service.dart';
+import 'package:note_repository/services/group_service.dart';
 import 'package:note_repository/services/navigation_service.dart';
 
 class CameraScreen extends StatefulWidget {

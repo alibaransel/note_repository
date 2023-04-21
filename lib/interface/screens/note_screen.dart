@@ -13,7 +13,7 @@ import 'package:note_repository/interface/common/common_loading_indicator.dart';
 import 'package:note_repository/interface/common/common_text.dart';
 import 'package:note_repository/models/note.dart';
 import 'package:note_repository/services/id_service.dart';
-import 'package:note_repository/services/item_service.dart';
+import 'package:note_repository/services/group_service.dart';
 import 'package:note_repository/services/navigation_service.dart';
 import 'package:note_repository/services/path_service.dart';
 import 'package:note_repository/services/time_service.dart';

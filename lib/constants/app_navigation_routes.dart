@@ -9,7 +9,7 @@ import 'package:note_repository/interface/screens/settings_screen.dart';
 import 'package:note_repository/interface/views/account_view.dart';
 import 'package:note_repository/interface/views/create_group_view.dart';
 import 'package:note_repository/models/navigation_route.dart';
-import 'package:note_repository/services/item_service.dart';
+import 'package:note_repository/services/group_service.dart';
 
 class AppNavigationRoutes {
   const AppNavigationRoutes._();
