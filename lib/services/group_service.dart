@@ -7,9 +7,9 @@ import 'package:note_repository/models/service.dart';
 import 'package:note_repository/services/id_service.dart';
 import 'package:note_repository/services/import_service.dart';
 import 'package:note_repository/services/path_service.dart';
+import 'package:note_repository/services/share_service.dart';
 import 'package:note_repository/services/storage_service.dart';
 import 'package:note_repository/services/time_service.dart';
-import 'package:share_plus/share_plus.dart';
 
 //TODO: Remove static methods
 
@@ -245,9 +245,5 @@ class GroupService extends Service with Initable {
   }
 
   //TODO: Stop using notePath as parameter
-  Future<void> shareNote(String notePath) async {
-    //TODO: Group share operations to seperate service (Apply same thing to import operations)
-    //TODO: Change note file naming system or rename file before sharing
-    await Share.shareXFiles([XFile(notePath)]);
-  }
+  Future<void> shareNote(String noteFilePath) => ShareService.shareFile(noteFilePath);
 }
