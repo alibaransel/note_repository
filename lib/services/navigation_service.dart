@@ -58,8 +58,10 @@ class NavigationService extends Service {
     }
   }
 
-  void showSnackBar(Message message) {
-    if (message.text.isEmpty) return;
+  void showSnackBar(Object object) {
+    //TODO: Handle different object types
+    if (object is! Message) return;
+    if (object.text.isEmpty) return;
     ScaffoldMessenger.of(_context).hideCurrentSnackBar();
     ScaffoldMessenger.of(_context).showSnackBar(
       SnackBar(
@@ -90,7 +92,7 @@ class NavigationService extends Service {
                 ],
               ),
               child: Text(
-                message.text,
+                object.text,
               ),
             ),
           ],

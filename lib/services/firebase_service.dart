@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:note_repository/constants/app_exception_messages.dart';
+import 'package:note_repository/constants/app_exceptions.dart';
 import 'package:note_repository/constants/app_keys.dart';
 import 'package:note_repository/models/service.dart';
 import 'package:note_repository/services/network_service.dart';
@@ -13,13 +13,11 @@ class FirebaseService extends Service {
   static bool isLoggedIn() => FirebaseAuth.instance.currentUser != null;
 
   static Future<User> loginWithGoogle() async {
-    if (!await NetworkService.hasInternet()) throw AppExceptionMessages.noInternet;
+    if (!await NetworkService.hasInternet()) throw AppExceptions.noInternet;
     final UserCredential userCredential = await _loginWithGoogle();
-    if (userCredential.user == null) throw AppExceptionMessages.error;
+    if (userCredential.user == null) throw AppExceptions.error;
     final User user = userCredential.user!;
-    if (userCredential.additionalUserInfo == null) {
-      throw AppExceptionMessages.error;
-    } //TODO
+    if (userCredential.additionalUserInfo == null) throw AppExceptions.error; //TODO
     if (await _isUserNew(userCredential, user)) await _createNewUserData(user);
     await _saveLoginInfo(user.uid);
     return user;
@@ -73,7 +71,7 @@ class FirebaseService extends Service {
 
     final Map<String, dynamic>? accountData = accountSnapshot.data();
 
-    if (accountData == null) throw AppExceptionMessages.error;
+    if (accountData == null) throw AppExceptions.error;
 
     final List<dynamic> loginHistory = (accountData[AppKeys.loginHistory] as List<dynamic>)
       ..add(TimeService.encode(DateTime.now()));

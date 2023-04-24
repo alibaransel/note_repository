@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:note_repository/constants/app_exception_messages.dart';
+import 'package:note_repository/constants/app_exceptions.dart';
 import 'package:note_repository/constants/app_info_messages.dart';
 import 'package:note_repository/constants/app_keys.dart';
 import 'package:note_repository/constants/app_navigation_routes.dart';
@@ -33,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
       NavigationService().show(AppNavigationRoutes.home);
       NavigationService().showSnackBar(AppInfoMessages.loginDone);
     } catch (e) {
-      NavigationService().showSnackBar(e is ExceptionMessage ? e : AppExceptionMessages.error);
+      NavigationService().showSnackBar(e is ExceptionMessage ? e : AppExceptions.error);
     }
     setState(() {
       _buttonStatus = true;
