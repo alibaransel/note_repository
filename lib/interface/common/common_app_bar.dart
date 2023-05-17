@@ -5,7 +5,7 @@ import 'package:note_repository/interface/common/common_background.dart';
 import 'package:note_repository/interface/common/common_icon_button.dart';
 import 'package:note_repository/services/navigation_service.dart';
 
-class CommonAppBar extends StatelessWidget with PreferredSizeWidget {
+class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CommonAppBar({
     required this.titles,
     super.key,
