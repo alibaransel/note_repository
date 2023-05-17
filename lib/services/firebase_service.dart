@@ -73,14 +73,14 @@ class FirebaseService extends Service {
 
     if (accountData == null) throw AppExceptions.error;
 
-    final List<dynamic> loginHistory = (accountData[AppKeys.loginHistory] as List<dynamic>)
+    final List<String> loginHistory = (accountData[AppKeys.loginHistory] as List).cast()
       ..add(TimeService.encode(DateTime.now()));
 
     await FirebaseFirestore.instance
         .collection(AppKeys.users)
         .doc(uid)
         .collection(AppKeys.user)
-        .doc(AppKeys.account)
+        .doc(AppKeys.account) //TODO: Use set with set options
         .update({
       AppKeys.loginHistory: loginHistory,
     });

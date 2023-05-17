@@ -34,7 +34,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   static const Duration _scaleAnimationDuration = AppDurations.m;
 
   final List<Color> _colorList =
-      AppIdCodeMaps.codeTypeMap[AppIdCodes.color]!.values.toList() as List<Color>;
+      AppIdCodeMaps.codeTypeMap[AppIdCodes.color]!.values.toList().cast<Color>();
 
   final TextEditingController _groupNameTextController = TextEditingController();
 

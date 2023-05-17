@@ -49,22 +49,16 @@ class GroupService extends Service with Initable {
   Future<List<GroupInfo>> _getGroupInfos() async {
     final Map<String, dynamic> groupIdsData =
         await StorageService.file.getData(PathService().groupGroupIds(groupPath));
-    final List<dynamic> groupIds = groupIdsData[AppKeys.data] as List<dynamic>? ?? [];
-    final List<GroupInfo> groupInfos = List.generate(
-      groupIds.length,
-      (i) => IdService.decodeGroupInfo(groupIds[i] as String),
-    );
+    final List<String> groupIds = (groupIdsData[AppKeys.data] as List).cast();
+    final List<GroupInfo> groupInfos = groupIds.map(IdService.decodeGroupInfo).toList();
     return groupInfos;
   }
 
   Future<List<NoteInfo>> _getNoteInfos() async {
     final Map<String, dynamic> noteIdsData =
         await StorageService.file.getData(PathService().groupNoteIds(groupPath));
-    final List<dynamic> noteIds = noteIdsData[AppKeys.data] as List<dynamic>? ?? [];
-    final List<NoteInfo> noteInfos = List.generate(
-      noteIds.length,
-      (i) => IdService.decodeNoteInfo(noteIds[i] as String),
-    );
+    final List<String> noteIds = (noteIdsData[AppKeys.data] as List).cast();
+    final List<NoteInfo> noteInfos = noteIds.map(IdService.decodeNoteInfo).toList();
     return noteInfos;
   }
 
@@ -78,13 +72,8 @@ class GroupService extends Service with Initable {
     if (_isGroupNameExist(newGroupInfo.name)) return; //TODO: Add Name exist exception
     final Map<String, dynamic> groupIdsData =
         await StorageService.file.getData(PathService().groupGroupIds(groupPath));
-    final List<String> groupIds;
-    if (groupIdsData[AppKeys.data] is List<String>) {
-      groupIds = groupIdsData[AppKeys.data] as List<String>;
-    } else {
-      groupIds = <String>[];
-    }
-    groupIds.add(IdService.encodeGroupInfo(newGroupInfo));
+    final List<String> groupIds = (groupIdsData[AppKeys.data] as List).cast()
+      ..add(IdService.encodeGroupInfo(newGroupInfo));
     await StorageService.file.setData(
       path: PathService().groupGroupIds(groupPath),
       data: {
@@ -120,7 +109,7 @@ class GroupService extends Service with Initable {
   Future<void> deleteGroup(GroupInfo groupInfo) async {
     final String groupIdsPath = PathService().groupGroupIds(groupPath);
     final Map<String, dynamic> groupIdsData = await StorageService.file.getData(groupIdsPath);
-    final List<dynamic> groupIds = groupIdsData[AppKeys.data] as List<dynamic>
+    final List<String> groupIds = (groupIdsData[AppKeys.data] as List).cast()
       ..remove(IdService.encodeGroupInfo(groupInfo));
     await StorageService.file.setData(
       path: groupIdsPath,
@@ -165,10 +154,7 @@ class GroupService extends Service with Initable {
     final String id = IdService.encodeNoteInfo(noteInfo);
     final Map<String, dynamic> noteIdsData =
         await StorageService.file.getData(PathService().groupNoteIds(groupPath));
-    final List<String> noteIds = noteIdsData[AppKeys.data] is List<String>
-        ? noteIdsData[AppKeys.data] as List<String>
-        : <String>[]
-      ..add(id);
+    final List<String> noteIds = (noteIdsData[AppKeys.data] as List).cast()..add(id);
     await StorageService.file.setData(
       path: PathService().groupNoteIds(groupPath),
       data: {
@@ -233,7 +219,7 @@ class GroupService extends Service with Initable {
     final String groupNoteIdsPath = PathService().groupNoteIds(PathService().groupOfNote(notePath));
     final Map<String, dynamic> groupNoteIdsData =
         await StorageService.file.getData(groupNoteIdsPath);
-    final List<dynamic> groupNoteIds = groupNoteIdsData[AppKeys.data] as List<dynamic>..remove(id);
+    final List<String> groupNoteIds = (groupNoteIdsData[AppKeys.data] as List).cast()..remove(id);
     await StorageService.file.setData(
       path: groupNoteIdsPath,
       data: {
