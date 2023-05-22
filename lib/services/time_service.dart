@@ -3,6 +3,10 @@ import 'package:note_repository/models/service.dart';
 class TimeService extends Service {
   TimeService._();
 
+  static const String dateSplitter = '.';
+  static const String timeSplitter = ':';
+  static const String dateTimeSplitter = '+';
+
   static String _twoDigit(int number) {
     if (number > 9) return '$number';
     return '0$number';
@@ -13,9 +17,9 @@ class TimeService extends Service {
   }
 
   static DateTime decode(String dateTimeInfo) {
-    final List<String> datesAndTimes = dateTimeInfo.split('+');
-    final List<String> dates = datesAndTimes[0].split('.');
-    final List<String> times = datesAndTimes[1].split(':');
+    final List<String> datesAndTimes = dateTimeInfo.split(dateTimeSplitter);
+    final List<String> dates = datesAndTimes[0].split(dateSplitter);
+    final List<String> times = datesAndTimes[1].split(timeSplitter);
     return DateTime(
       int.parse(dates[2]),
       int.parse(dates[1]),
