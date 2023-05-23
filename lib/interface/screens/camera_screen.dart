@@ -97,16 +97,21 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
     //NavigationService().showSnackBar(InfoMessage(result));
   }
 
-  Future<void> _changeCameraSettingBox(CameraSetting<dynamic> newCameraSetting) async {
-    setState(() {
-      _cameraSetting = null;
-    });
-    if (_cameraSetting != newCameraSetting) {
+  Future<void> _cameraSettingButtonOnTap(CameraSetting<dynamic> cameraSetting) async {
+    final bool isNewSetting = _cameraSetting != cameraSetting;
+    _hideCameraSettingBox();
+    if (isNewSetting) {
       await Future<void>.delayed(_cameraSettingBoxChangeDuration);
-      setState(() {
-        _cameraSetting = newCameraSetting;
-      });
+      _setCameraSettingBox(cameraSetting);
     }
+  }
+
+  void _hideCameraSettingBox() => _setCameraSettingBox(null);
+
+  void _setCameraSettingBox(CameraSetting<dynamic>? cameraSetting) {
+    setState(() {
+      _cameraSetting = cameraSetting;
+    });
   }
 
   @override
@@ -521,7 +526,7 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
           .singleWhere((settingOption) => settingOption.data == _flashMode)
           .icon,
       onTap: () async {
-        await _changeCameraSettingBox(CameraSetting.flashMode);
+        await _cameraSettingButtonOnTap(CameraSetting.flashMode);
       },
     );
   }
@@ -538,7 +543,7 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
       icon: cameraSwitchCameraOption.icon,
       text: cameraSwitchCameraOption.text,
       onTap: () async {
-        await _changeCameraSettingBox(CameraSetting.cameraSwitch);
+        await _cameraSettingButtonOnTap(CameraSetting.cameraSwitch);
       },
     );
   }
