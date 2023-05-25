@@ -17,6 +17,8 @@ import 'package:note_repository/services/camera_service.dart';
 import 'package:note_repository/services/group_service.dart';
 import 'package:note_repository/services/navigation_service.dart';
 
+//TODO: Separere logic from ui code. For this select design pattern and apply to whole project.
+
 class CameraScreen extends StatefulWidget {
   const CameraScreen(
     this._groupService, {

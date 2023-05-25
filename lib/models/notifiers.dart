@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+//TODO: Refactor Notifier models.
 class OpenChangeNotifier extends ChangeNotifier {
   @override
   @nonVirtual
