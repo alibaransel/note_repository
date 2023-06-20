@@ -34,22 +34,13 @@ class PlatformService extends Service with Initable {
   }
 
   PlatformType _getPlatformType() {
-    if (kIsWeb) {
-      return PlatformType.web;
-    }
-    if (Platform.isAndroid) {
-      return PlatformType.android;
-    } else if (Platform.isFuchsia) {
-      return PlatformType.fuchsia;
-    } else if (Platform.isIOS) {
-      return PlatformType.ios;
-    } else if (Platform.isLinux) {
-      return PlatformType.linux;
-    } else if (Platform.isMacOS) {
-      return PlatformType.macos;
-    } else {
-      //TODO: else if(Platform.isWindows) {
-      return PlatformType.windows;
-    } //TODO: Add else block logic for unsupported platform (and maybe add unsupported platform screen)
-  }
+    if (kIsWeb) return PlatformType.web;
+    if (Platform.isAndroid) return PlatformType.android;
+    if (Platform.isFuchsia) return PlatformType.fuchsia;
+    if (Platform.isIOS) return PlatformType.ios;
+    if (Platform.isLinux) return PlatformType.linux;
+    if (Platform.isMacOS) return PlatformType.macos;
+    //TODO: if(Platform.isWindows)
+    return PlatformType.windows;
+  } //TODO: Add else block logic for unsupported platform (and maybe add unsupported platform screen)
 }
