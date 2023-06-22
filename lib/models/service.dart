@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:note_repository/models/notifiers.dart';
 
+// TODO: Research and improve Service inheritance
 abstract class Service {}
 
 mixin Initable on Service {

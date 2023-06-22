@@ -7,9 +7,11 @@ import 'package:note_repository/services/service_service.dart';
 import 'package:note_repository/services/setting_service.dart';
 
 void main() async {
+  // TODO: Async operation before app run, be carefull!
   await ServiceService.beforeAppRun();
   runApp(const App());
 }
+// TODO: Improve navigation
 //TODO: Use FlutterFire CLI to recreate project with Firebase
 //TODO: Data security
 //TODO: Onboarding screen
