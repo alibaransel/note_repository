@@ -7,7 +7,7 @@ import 'package:note_repository/services/service_service.dart';
 import 'package:note_repository/services/setting_service.dart';
 
 void main() async {
-  // TODO: Async operation before app run, be carefull!
+  // TODO: Async operation before app run, be careful!
   await ServiceService.beforeAppRun();
   runApp(const App());
 }

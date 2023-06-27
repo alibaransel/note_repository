@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:note_repository/enums/platform_type.dart';
 import 'package:note_repository/models/service.dart';
 
-// TODO: Imlement platform specification to other Services
+// TODO: Implement platform specification to other Services
 
 class PlatformService extends Service with Initable {
   factory PlatformService() => _instance;
