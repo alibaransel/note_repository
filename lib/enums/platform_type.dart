@@ -6,4 +6,5 @@ enum PlatformType {
   linux,
   macos,
   windows,
+  other,
 }

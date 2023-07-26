@@ -42,7 +42,7 @@ class PlatformService extends Service with Initable {
     if (Platform.isIOS) return PlatformType.ios;
     if (Platform.isLinux) return PlatformType.linux;
     if (Platform.isMacOS) return PlatformType.macos;
-    //TODO: if(Platform.isWindows)
-    return PlatformType.windows;
-  } //TODO: Add else block logic for unsupported platform (and maybe add unsupported platform screen)
+    if (Platform.isWindows) return PlatformType.windows;
+    return PlatformType.other;
+  }
 }
