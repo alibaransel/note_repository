@@ -7,6 +7,9 @@ import 'package:note_repository/models/service.dart';
 import 'package:note_repository/services/network_service.dart';
 import 'package:note_repository/services/time_service.dart';
 
+// TODO: Move paths and it's operations to AppPaths and PathService
+// TODO: Separete storage and authentication operations
+
 class FirebaseService extends Service {
   FirebaseService._();
 

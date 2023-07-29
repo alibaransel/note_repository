@@ -1,9 +1,10 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:note_repository/enums/platform_type.dart';
 import 'package:note_repository/models/service.dart';
 import 'package:note_repository/services/isolate_service.dart';
+import 'package:note_repository/services/platform_service.dart';
 
 typedef ProcessFunction<T> = FutureOr<T> Function();
 
@@ -20,8 +21,8 @@ class ProcessService extends Service with Initable, AutoStoppable {
 
   final List<ProcessFunction<dynamic>> _processFunctionQueue = [];
   final Map<ProcessFunction<dynamic>, Completer<dynamic>> _processCompleterMap = {};
+  final int _maxIsolateCount = PlatformService.numberOfProcessors;
 
-  late final int _maxIsolateCount;
   late final bool _multiIsolateSupported;
   late final List<IsolateService> _isolateServices;
 
@@ -33,11 +34,11 @@ class ProcessService extends Service with Initable, AutoStoppable {
 
   @override
   Future<void> init() async {
-    _maxIsolateCount = Platform.numberOfProcessors;
-    _multiIsolateSupported = _maxIsolateCount > 1;
+    _multiIsolateSupported =
+        PlatformService.platformType != PlatformType.web && _maxIsolateCount > 1;
     _isolateServices = List.generate(_availableIsolateCount, (i) {
       final IsolateService isolateService = IsolateService(i);
-      return isolateService;
+      return isolateService; //TODO: Research list performance according to growable property
     });
     if (_hasAvailableIsolate) await _startIsolate(0);
     super.init();
