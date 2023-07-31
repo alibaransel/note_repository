@@ -37,7 +37,7 @@ class AppKeys {
   static const String nameExist = 'name-exist';
 
   //Ids
-  static const String mainGroupId = 'idcode-i.g-01.01.2001+01:01-maingroup';
+  static const String mainGroupId = 'idcode-i.g-01.01.2001+01&01-maingroup';
 
   //
   static const String data = 'data';

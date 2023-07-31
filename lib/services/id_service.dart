@@ -51,7 +51,7 @@ class IdService extends Service {
     }
     id
       ..write(AppIdCodes.idCodeSeparator)
-      ..write(TimeService.encode(idBlock.dateTime))
+      ..write(TimeService.encode(idBlock.dateTime).replaceAll(':', '&'))
       ..write(AppIdCodes.idCodeSeparator)
       ..write(idBlock.name);
     return id.toString();
@@ -63,7 +63,8 @@ class IdService extends Service {
     final List<String> idBlockCodes = id.split(AppIdCodes.idCodeSeparator).sublist(1);
     name = idBlockCodes.last;
     idBlockCodes.removeLast();
-    dateTime = TimeService.decode(idBlockCodes.last);
+    dateTime = TimeService.decode(idBlockCodes.last.replaceAll('&', ':'));
+    // TODO: Find better solution to hour - minute separator (:) replacement for windows path rules
     idBlockCodes.removeLast();
     final Map<String, dynamic> idBlockMap = {};
     List<String> splitCode = [];
